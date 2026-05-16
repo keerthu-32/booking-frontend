@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://booking-backend-4-8bxx.onrender.com/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://booking-backend-final.onrender.com/api/v1';
 
 export interface FlightSearchParams {
   origin: string;
