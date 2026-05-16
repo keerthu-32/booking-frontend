@@ -31,14 +31,25 @@ const SearchFlightsPage: React.FC = () => {
 
   useEffect(() => {
     const searchFlights = async () => {
+      const origin = searchParams.get('origin');
+      const destination = searchParams.get('destination');
+      const departureDate = searchParams.get('departureDate');
+
+      // Don't search if required params are missing
+      if (!origin || !destination || !departureDate) {
+        setLoading(false);
+        setError('Please provide search criteria from the home page');
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
 
         const params = {
-          origin: searchParams.get('origin') || '',
-          destination: searchParams.get('destination') || '',
-          departureDate: searchParams.get('departureDate') || '',
+          origin,
+          destination,
+          departureDate,
           returnDate: searchParams.get('returnDate') || undefined,
           passengers: parseInt(searchParams.get('passengers') || '1'),
           sortBy,
