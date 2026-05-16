@@ -31,31 +31,26 @@ const SearchFlightsPage: React.FC = () => {
 
   useEffect(() => {
     const searchFlights = async () => {
-      const origin = searchParams.get('origin');
-      const destination = searchParams.get('destination');
-      const departureDate = searchParams.get('departureDate');
-
-      // Don't search if required params are missing
-      if (!origin || !destination || !departureDate) {
-        setLoading(false);
-        setError('Please provide search criteria from the home page');
-        return;
-      }
-
       try {
         setLoading(true);
         setError(null);
 
-        const params = {
-          origin,
-          destination,
-          departureDate,
-          returnDate: searchParams.get('returnDate') || undefined,
-          passengers: parseInt(searchParams.get('passengers') || '1'),
+        const origin = searchParams.get('origin');
+        const destination = searchParams.get('destination');
+        const departureDate = searchParams.get('departureDate');
+
+        const params: any = {
           sortBy,
           page: 1,
           limit: 20,
         };
+
+        // Add search filters only if provided
+        if (origin) params.origin = origin;
+        if (destination) params.destination = destination;
+        if (departureDate) params.departureDate = departureDate;
+        if (searchParams.get('returnDate')) params.returnDate = searchParams.get('returnDate');
+        if (searchParams.get('passengers')) params.passengers = parseInt(searchParams.get('passengers') || '1');
 
         const response = await apiService.searchFlights(params, accessToken || undefined);
         setFlights(response.data.flights);
@@ -80,7 +75,11 @@ const SearchFlightsPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Available Flights</h1>
+        <h1 className="text-3xl font-bold">
+          {searchParams.get('origin') || searchParams.get('destination') 
+            ? 'Search Results' 
+            : 'All Available Flights'}
+        </h1>
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
