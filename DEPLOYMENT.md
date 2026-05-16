@@ -7,7 +7,7 @@
 ## Environment Variables to Set on Render
 
 ```
-VITE_API_BASE_URL=https://booking-backend-6-eaw5.onrender.com/api/v1
+VITE_API_BASE_URL=https://booking-backend-4-8bxx.onrender.com/api/v1
 ```
 
 ## Deployment Steps
