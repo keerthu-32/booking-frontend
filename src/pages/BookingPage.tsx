@@ -80,8 +80,13 @@ const BookingPage: React.FC = () => {
         flightId,
         cabinClass: selectedClass,
         passengers: passengers.map((p) => ({
-          ...p,
-          dateOfBirth: new Date(p.dateOfBirth).toISOString(),
+          firstName: p.firstName,
+          lastName: p.lastName,
+          dateOfBirth: p.dateOfBirth, // Already in YYYY-MM-DD format from date input
+          passportNumber: p.passportNumber,
+          nationality: p.nationality,
+          seatNumber: p.seatNumber,
+          mealPreference: p.mealPreference || 'regular',
         })),
       };
 
@@ -157,66 +162,108 @@ const BookingPage: React.FC = () => {
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  placeholder="First Name"
-                  value={passenger.firstName}
-                  onChange={(e) => handlePassengerChange(index, 'firstName', e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Last Name"
-                  value={passenger.lastName}
-                  onChange={(e) => handlePassengerChange(index, 'lastName', e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                  required
-                />
-                <input
-                  type="date"
-                  placeholder="Date of Birth"
-                  value={passenger.dateOfBirth}
-                  onChange={(e) => handlePassengerChange(index, 'dateOfBirth', e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Passport Number"
-                  value={passenger.passportNumber}
-                  onChange={(e) => handlePassengerChange(index, 'passportNumber', e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Nationality"
-                  value={passenger.nationality}
-                  onChange={(e) => handlePassengerChange(index, 'nationality', e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Seat Number (e.g., 1A)"
-                  value={passenger.seatNumber}
-                  onChange={(e) => handlePassengerChange(index, 'seatNumber', e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                  required
-                />
-                <select
-                  value={passenger.mealPreference}
-                  onChange={(e) => handlePassengerChange(index, 'mealPreference', e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 md:col-span-2"
-                >
-                  <option value="">Select Meal Preference</option>
-                  <option value="vegetarian">Vegetarian</option>
-                  <option value="vegan">Vegan</option>
-                  <option value="halal">Halal</option>
-                  <option value="kosher">Kosher</option>
-                  <option value="regular">Regular</option>
-                </select>
+                <div>
+                  <label htmlFor={`firstName-${index}`} className="block text-sm font-medium mb-2">
+                    First Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id={`firstName-${index}`}
+                    type="text"
+                    placeholder="First Name"
+                    value={passenger.firstName}
+                    onChange={(e) => handlePassengerChange(index, 'firstName', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor={`lastName-${index}`} className="block text-sm font-medium mb-2">
+                    Last Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id={`lastName-${index}`}
+                    type="text"
+                    placeholder="Last Name"
+                    value={passenger.lastName}
+                    onChange={(e) => handlePassengerChange(index, 'lastName', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor={`dateOfBirth-${index}`} className="block text-sm font-medium mb-2">
+                    Date of Birth <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id={`dateOfBirth-${index}`}
+                    type="date"
+                    value={passenger.dateOfBirth}
+                    max={new Date().toISOString().split('T')[0]}
+                    onChange={(e) => handlePassengerChange(index, 'dateOfBirth', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor={`passportNumber-${index}`} className="block text-sm font-medium mb-2">
+                    Passport Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id={`passportNumber-${index}`}
+                    type="text"
+                    placeholder="Passport Number"
+                    value={passenger.passportNumber}
+                    onChange={(e) => handlePassengerChange(index, 'passportNumber', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor={`nationality-${index}`} className="block text-sm font-medium mb-2">
+                    Nationality <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id={`nationality-${index}`}
+                    type="text"
+                    placeholder="Nationality"
+                    value={passenger.nationality}
+                    onChange={(e) => handlePassengerChange(index, 'nationality', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor={`seatNumber-${index}`} className="block text-sm font-medium mb-2">
+                    Seat Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id={`seatNumber-${index}`}
+                    type="text"
+                    placeholder="Seat Number (e.g., 1A)"
+                    value={passenger.seatNumber}
+                    onChange={(e) => handlePassengerChange(index, 'seatNumber', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                    required
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label htmlFor={`mealPreference-${index}`} className="block text-sm font-medium mb-2">
+                    Meal Preference
+                  </label>
+                  <select
+                    id={`mealPreference-${index}`}
+                    value={passenger.mealPreference}
+                    onChange={(e) => handlePassengerChange(index, 'mealPreference', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                  >
+                    <option value="">Select Meal Preference</option>
+                    <option value="vegetarian">Vegetarian</option>
+                    <option value="vegan">Vegan</option>
+                    <option value="halal">Halal</option>
+                    <option value="kosher">Kosher</option>
+                    <option value="regular">Regular</option>
+                  </select>
+                </div>
               </div>
             </div>
           ))}
