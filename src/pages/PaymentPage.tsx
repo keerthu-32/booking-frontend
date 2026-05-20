@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 declare global {
   interface Window {
-    Stripe: any;
+    Razorpay: any;
   }
 }
 
@@ -21,22 +21,27 @@ const PaymentPage: React.FC = () => {
   const { bookingId } = useParams<{ bookingId: string }>();
   const navigate = useNavigate();
   const location = useLocation();
-  const { accessToken } = useAuth();
+  const { accessToken, user } = useAuth();
 
   const bookingReference = location.state?.bookingReference;
   const fareBreakdown = location.state?.fareBreakdown as FareBreakdown | undefined;
 
-  const [paymentMethod, setPaymentMethod] = useState('card');
-  const [provider, setProvider] = useState('stripe');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [cardDetails, setCardDetails] = useState({
-    cardNumber: '',
-    cardExpiry: '',
-    cardCvc: '',
-    cardName: '',
-  });
   const [paymentDone, setPaymentDone] = useState(false);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+
+  // Load Razorpay script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => setScriptLoaded(true);
+    script.onerror = () => setError('Failed to load payment gateway. Please refresh.');
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   if (!bookingId || !accessToken) {
     return (
@@ -48,15 +53,9 @@ const PaymentPage: React.FC = () => {
     );
   }
 
-  const handleCardChange = (field: string, value: string) => {
-    setCardDetails((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handlePayment = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!cardDetails.cardNumber || !cardDetails.cardExpiry || !cardDetails.cardCvc) {
-      setError('Please fill in all card details');
+  const handlePayment = async () => {
+    if (!scriptLoaded) {
+      setError('Payment gateway is still loading. Please wait.');
       return;
     }
 
@@ -64,36 +63,61 @@ const PaymentPage: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      // Initiate payment
+      // Step 1: Initiate payment on backend to get order details
       const initiateResponse = await apiService.initiatePayment(
-        {
-          bookingId,
-          paymentMethod,
-          provider,
-        },
+        { bookingId, paymentMethod: 'card', provider: 'razorpay' },
         accessToken
       );
 
-      const { paymentIntentId } = initiateResponse.data;
+      const { orderId, amount, currency } = initiateResponse.data;
 
-      // For demo purposes, we'll simulate payment success
-      // In production, you would use Stripe.js here
-      
-      // Simulate payment processing
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Step 2: Open Razorpay checkout
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_Srfyt28pepRqGj',
+        amount: amount, // in paise (backend should return this)
+        currency: currency || 'INR',
+        name: 'FlightBook',
+        description: `Booking ${bookingReference}`,
+        order_id: orderId,
+        handler: async (response: any) => {
+          try {
+            // Step 3: Confirm payment with backend
+            const confirmResponse = await apiService.confirmPayment(
+              response.razorpay_payment_id,
+              accessToken
+            );
 
-      // Confirm payment
-      const confirmResponse = await apiService.confirmPayment(paymentIntentId, accessToken);
+            if (confirmResponse.success) {
+              setPaymentDone(true);
+              setTimeout(() => navigate('/my-bookings'), 3000);
+            }
+          } catch {
+            setError('Payment verification failed. Please contact support.');
+          } finally {
+            setLoading(false);
+          }
+        },
+        prefill: {
+          name: user ? `${user.firstName} ${user.lastName}` : '',
+          email: user?.email || '',
+        },
+        theme: { color: '#2563EB' },
+        modal: {
+          ondismiss: () => {
+            setLoading(false);
+            setError('Payment was cancelled.');
+          },
+        },
+      };
 
-      if (confirmResponse.success) {
-        setPaymentDone(true);
-        setTimeout(() => {
-          navigate(`/my-bookings`);
-        }, 3000);
-      }
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', (response: any) => {
+        setError(`Payment failed: ${response.error.description}`);
+        setLoading(false);
+      });
+      rzp.open();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Payment failed. Please try again.');
-    } finally {
+      setError(err instanceof Error ? err.message : 'Failed to initiate payment. Please try again.');
       setLoading(false);
     }
   };
@@ -102,10 +126,13 @@ const PaymentPage: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="bg-green-100 border-2 border-green-400 rounded-lg p-8 text-center">
-          <h1 className="text-3xl font-bold text-green-800 mb-2">✓ Payment Successful!</h1>
+          <div className="text-6xl mb-4">✓</div>
+          <h1 className="text-3xl font-bold text-green-800 mb-2">Payment Successful!</h1>
           <p className="text-green-700 mb-4">Your booking has been confirmed.</p>
-          <p className="text-gray-600 mb-6">Booking Reference: <span className="font-bold">{bookingReference}</span></p>
-          <p className="text-gray-600 mb-8">Redirecting to your bookings...</p>
+          <p className="text-gray-600 mb-2">
+            Booking Reference: <span className="font-bold font-mono">{bookingReference}</span>
+          </p>
+          <p className="text-gray-500 text-sm">Redirecting to your bookings...</p>
         </div>
       </div>
     );
@@ -122,141 +149,54 @@ const PaymentPage: React.FC = () => {
       )}
 
       <div className="grid md:grid-cols-3 gap-8">
-        {/* Payment Form */}
+        {/* Payment Section */}
         <div className="md:col-span-2">
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <div className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-xl font-bold mb-6">Payment Details</h2>
 
-            <form onSubmit={handlePayment}>
-              {/* Payment Method */}
-              <div className="mb-6">
-                <h3 className="font-semibold mb-3">Payment Method</h3>
-                <div className="space-y-2">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      value="card"
-                      checked={paymentMethod === 'card'}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="w-4 h-4"
-                    />
-                    <span>Credit/Debit Card</span>
-                  </label>
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      value="wallet"
-                      checked={paymentMethod === 'wallet'}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="w-4 h-4"
-                    />
-                    <span>Digital Wallet</span>
-                  </label>
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      value="bank_transfer"
-                      checked={paymentMethod === 'bank_transfer'}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="w-4 h-4"
-                    />
-                    <span>Bank Transfer</span>
-                  </label>
-                </div>
+            <div className="border border-blue-200 bg-blue-50 rounded-lg p-4 mb-6 flex items-center gap-4">
+              <img
+                src="https://razorpay.com/favicon.ico"
+                alt="Razorpay"
+                className="w-8 h-8"
+                onError={(e) => (e.currentTarget.style.display = 'none')}
+              />
+              <div>
+                <p className="font-semibold text-blue-800">Razorpay Secure Checkout</p>
+                <p className="text-sm text-blue-600">Pay with UPI, Cards, Net Banking & more</p>
               </div>
+            </div>
 
-              {/* Payment Provider */}
-              <div className="mb-6">
-                <h3 className="font-semibold mb-3">Payment Provider</h3>
-                <div className="space-y-2">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      value="stripe"
-                      checked={provider === 'stripe'}
-                      onChange={(e) => setProvider(e.target.value)}
-                      className="w-4 h-4"
-                    />
-                    <span>Stripe</span>
-                  </label>
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      value="razorpay"
-                      checked={provider === 'razorpay'}
-                      onChange={(e) => setProvider(e.target.value)}
-                      className="w-4 h-4"
-                    />
-                    <span>Razorpay</span>
-                  </label>
-                </div>
+            <div className="space-y-3 mb-6 text-sm text-gray-600">
+              <div className="flex items-center gap-2">
+                <span className="text-green-600">✓</span> Credit / Debit Cards
               </div>
+              <div className="flex items-center gap-2">
+                <span className="text-green-600">✓</span> UPI (GPay, PhonePe, Paytm)
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-green-600">✓</span> Net Banking
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-green-600">✓</span> Wallets
+              </div>
+            </div>
 
-              {/* Card Details */}
-              {paymentMethod === 'card' && (
-                <>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium mb-2">Cardholder Name</label>
-                    <input
-                      type="text"
-                      placeholder="John Doe"
-                      value={cardDetails.cardName}
-                      onChange={(e) => handleCardChange('cardName', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                      required
-                    />
-                  </div>
+            <button
+              onClick={handlePayment}
+              disabled={loading || !scriptLoaded}
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-4 rounded-lg transition text-lg"
+            >
+              {loading
+                ? 'Opening Payment Gateway...'
+                : !scriptLoaded
+                ? 'Loading...'
+                : `Pay ${fareBreakdown ? `$${fareBreakdown.totalAmount.toFixed(2)}` : 'Now'}`}
+            </button>
 
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium mb-2">Card Number</label>
-                    <input
-                      type="text"
-                      placeholder="4242 4242 4242 4242"
-                      value={cardDetails.cardNumber}
-                      onChange={(e) => handleCardChange('cardNumber', e.target.value.replace(/\s/g, ''))}
-                      maxLength={16}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                      required
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Expiry (MM/YY)</label>
-                      <input
-                        type="text"
-                        placeholder="12/25"
-                        value={cardDetails.cardExpiry}
-                        onChange={(e) => handleCardChange('cardExpiry', e.target.value)}
-                        maxLength={5}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">CVC</label>
-                      <input
-                        type="text"
-                        placeholder="123"
-                        value={cardDetails.cardCvc}
-                        onChange={(e) => handleCardChange('cardCvc', e.target.value)}
-                        maxLength={4}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                        required
-                      />
-                    </div>
-                  </div>
-                </>
-              )}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 rounded-lg transition"
-              >
-                {loading ? 'Processing Payment...' : 'Pay Now'}
-              </button>
-            </form>
+            <p className="text-xs text-gray-500 text-center mt-3">
+              Secured by Razorpay. Your payment info is encrypted.
+            </p>
           </div>
         </div>
 
@@ -265,7 +205,7 @@ const PaymentPage: React.FC = () => {
           <div className="bg-white rounded-lg shadow-lg p-6 sticky top-8">
             <h2 className="text-xl font-bold mb-6">Order Summary</h2>
 
-            {fareBreakdown && (
+            {fareBreakdown ? (
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Base Fare</span>
@@ -286,27 +226,16 @@ const PaymentPage: React.FC = () => {
                   </span>
                 </div>
               </div>
+            ) : (
+              <p className="text-gray-500 text-sm mb-6">Loading fare details...</p>
             )}
 
-            <div className="bg-blue-50 border border-blue-200 rounded p-4 text-sm text-blue-800">
-              <p className="font-semibold mb-2">Booking Reference</p>
-              <p className="font-mono">{bookingReference}</p>
-            </div>
-
-            <div className="mt-6 space-y-2 text-sm">
-              <div className="flex items-start gap-2">
-                <span className="text-green-600 font-bold">✓</span>
-                <span className="text-gray-600">Secure payment processing</span>
+            {bookingReference && (
+              <div className="bg-blue-50 border border-blue-200 rounded p-4 text-sm text-blue-800">
+                <p className="font-semibold mb-1">Booking Reference</p>
+                <p className="font-mono">{bookingReference}</p>
               </div>
-              <div className="flex items-start gap-2">
-                <span className="text-green-600 font-bold">✓</span>
-                <span className="text-gray-600">Instant booking confirmation</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-green-600 font-bold">✓</span>
-                <span className="text-gray-600">24/7 customer support</span>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
