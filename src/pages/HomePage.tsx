@@ -202,7 +202,7 @@ const HomePage: React.FC = () => {
                     {filteredOrigins.map((airport) => (
                       <div
                         key={airport.iataCode}
-                        onClick={() => selectOrigin(airport)}
+                        onMouseDown={() => selectOrigin(airport)}
                         className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
                       >
                         <div className="font-semibold">{airport.iataCode}</div>
@@ -242,7 +242,7 @@ const HomePage: React.FC = () => {
                     {filteredDestinations.map((airport) => (
                       <div
                         key={airport.iataCode}
-                        onClick={() => selectDestination(airport)}
+                        onMouseDown={() => selectDestination(airport)}
                         className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
                       >
                         <div className="font-semibold">{airport.iataCode}</div>
