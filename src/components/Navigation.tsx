@@ -29,6 +29,11 @@ const Navigation: React.FC = () => {
                 <Link to="/my-bookings" className="hover:text-blue-100">
                   My Bookings
                 </Link>
+                {user?.role === 'admin' && (
+                  <Link to="/analytics" className="hover:text-blue-100">
+                    Analytics
+                  </Link>
+                )}
                 <div className="flex items-center gap-4">
                   <span>{user?.firstName}</span>
                   <button

@@ -9,6 +9,7 @@ import PaymentPage from './pages/PaymentPage';
 import MyBookingsPage from './pages/MyBookingsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -30,6 +31,7 @@ function App() {
             <Route path="/booking/:flightId" element={<BookingPage />} />
             <Route path="/payment/:bookingId" element={<PaymentPage />} />
             <Route path="/my-bookings" element={<MyBookingsPage />} />
+            <Route path="/analytics" element={<AnalyticsPage />} />
           </Route>
 
           {/* Catch all */}
