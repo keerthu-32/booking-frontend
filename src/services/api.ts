@@ -67,6 +67,23 @@ export interface UpdateCurrentUserPayload {
   };
 }
 
+export interface HomepageRouteInsight {
+  origin: string;
+  destination: string;
+  route: string;
+  count: number;
+  revenue: number;
+}
+
+export interface HomepageInsights {
+  totalBookings: number;
+  totalRevenue: number;
+  averageBookingValue: number;
+  cancellationRate: number;
+  topRoutes: HomepageRouteInsight[];
+  featuredRoute: HomepageRouteInsight | null;
+}
+
 class ApiService {
   private getHeaders(token?: string): HeadersInit {
     const headers: HeadersInit = { 'Content-Type': 'application/json' };
@@ -242,6 +259,11 @@ class ApiService {
       { headers: this.getHeaders(token) },
       token
     );
+    return this.handleResponse(response);
+  }
+
+  async getHomepageInsights() {
+    const response = await fetch(`${API_BASE_URL}/bookings/insights`);
     return this.handleResponse(response);
   }
 

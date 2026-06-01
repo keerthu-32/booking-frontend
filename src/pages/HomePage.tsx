@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiService } from '../services/api';
+import type { HomepageInsights, HomepageRouteInsight } from '../services/api';
 
 interface Airport {
   iataCode: string;
@@ -16,6 +18,10 @@ const HomePage: React.FC = () => {
   const [returnDate, setReturnDate] = useState('');
   const [passengers, setPassengers] = useState(1);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [homepageInsights, setHomepageInsights] = useState<HomepageInsights | null>(null);
+  const [homepageInsightsLoading, setHomepageInsightsLoading] = useState(true);
+  const [homepageInsightsError, setHomepageInsightsError] = useState<string | null>(null);
+  const [hasPrefilledPopularRoute, setHasPrefilledPopularRoute] = useState(false);
   
   // Autocomplete state
   const [origins, setOrigins] = useState<Airport[]>([]);
@@ -44,6 +50,43 @@ const HomePage: React.FC = () => {
     };
     fetchAirports();
   }, []);
+
+  useEffect(() => {
+    const fetchInsights = async () => {
+      try {
+        setHomepageInsightsLoading(true);
+        setHomepageInsightsError(null);
+        const response = await apiService.getHomepageInsights();
+        if (response.success) {
+          setHomepageInsights(response.data);
+        }
+      } catch (error) {
+        setHomepageInsightsError(error instanceof Error ? error.message : 'Failed to load route insights');
+      } finally {
+        setHomepageInsightsLoading(false);
+      }
+    };
+
+    fetchInsights();
+  }, []);
+
+  useEffect(() => {
+    const featuredRoute = homepageInsights?.featuredRoute;
+
+    if (
+      !featuredRoute ||
+      hasPrefilledPopularRoute ||
+      origin !== '' ||
+      destination !== ''
+    ) {
+      return;
+    }
+
+    setOrigin(featuredRoute.origin);
+    setDestination(featuredRoute.destination);
+    setTripType('oneway');
+    setHasPrefilledPopularRoute(true);
+  }, [destination, hasPrefilledPopularRoute, homepageInsights, origin]);
 
   // Filter origins based on input
   useEffect(() => {
@@ -134,6 +177,32 @@ const HomePage: React.FC = () => {
     setErrors({...errors, destination: ''});
   };
 
+  const applyPopularRoute = (route: HomepageRouteInsight) => {
+    setOrigin(route.origin);
+    setDestination(route.destination);
+    setTripType('oneway');
+    setDepartureDate('');
+    setReturnDate('');
+    setShowOriginDropdown(false);
+    setShowDestDropdown(false);
+    setErrors({});
+    setHasPrefilledPopularRoute(true);
+  };
+
+  const searchPopularRoute = (route: HomepageRouteInsight) => {
+    const searchParams = new URLSearchParams({
+      origin: route.origin,
+      destination: route.destination,
+      passengers: '1',
+    });
+
+    navigate(`/search?${searchParams.toString()}`);
+  };
+
+  const formatCurrency = (value: number) => `$${value.toFixed(0)}`;
+  const featuredRoute = homepageInsights?.featuredRoute;
+  const topRoutes = homepageInsights?.topRoutes || [];
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -144,190 +213,277 @@ const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Search Form */}
+      {/* Insights + Search */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <form onSubmit={handleSearch}>
-            {/* Trip Type Selection */}
-            <div className="mb-6 flex gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  value="roundtrip"
-                  checked={tripType === 'roundtrip'}
-                  onChange={(e) => setTripType(e.target.value)}
-                  className="w-4 h-4"
-                />
-                <span className="font-medium">Round Trip</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  value="oneway"
-                  checked={tripType === 'oneway'}
-                  onChange={(e) => setTripType(e.target.value)}
-                  className="w-4 h-4"
-                />
-                <span className="font-medium">One Way</span>
-              </label>
-            </div>
+        <div className="grid gap-4 md:grid-cols-3 mb-8">
+          <div className="bg-white rounded-lg shadow-lg p-6 border border-blue-100">
+            <p className="text-sm text-gray-500">Most Popular Route</p>
+            <p className="mt-2 text-3xl font-bold text-blue-700">
+              {homepageInsightsLoading ? 'Loading...' : featuredRoute?.route || 'No bookings yet'}
+            </p>
+            <p className="mt-2 text-sm text-gray-600">
+              {featuredRoute
+                ? `${featuredRoute.count} bookings · ${formatCurrency(featuredRoute.revenue)} in revenue`
+                : 'This route will auto-fill in the booking form when data is available.'}
+            </p>
+            {featuredRoute && (
+              <button
+                type="button"
+                onClick={() => applyPopularRoute(featuredRoute)}
+                className="mt-4 inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+              >
+                Use in booking form
+              </button>
+            )}
+          </div>
 
-            {/* Search Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-              {/* Origin with Autocomplete */}
-              <div className="relative">
-                <label htmlFor="origin" className="block text-sm font-medium mb-2">
-                  From <span className="text-red-500">*</span>
+          <div className="bg-white rounded-lg shadow-lg p-6 border border-green-100">
+            <p className="text-sm text-gray-500">Average Booking Value</p>
+            <p className="mt-2 text-3xl font-bold text-green-700">
+              {homepageInsightsLoading ? 'Loading...' : formatCurrency(homepageInsights?.averageBookingValue || 0)}
+            </p>
+            <p className="mt-2 text-sm text-gray-600">Average confirmed booking amount across the network.</p>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-lg p-6 border border-red-100">
+            <p className="text-sm text-gray-500">Cancellation Rate</p>
+            <p className="mt-2 text-3xl font-bold text-red-700">
+              {homepageInsightsLoading ? 'Loading...' : `${(homepageInsights?.cancellationRate || 0).toFixed(1)}%`}
+            </p>
+            <p className="mt-2 text-sm text-gray-600">Share of bookings that were cancelled.</p>
+          </div>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <form onSubmit={handleSearch}>
+              {/* Trip Type Selection */}
+              <div className="mb-6 flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="roundtrip"
+                    checked={tripType === 'roundtrip'}
+                    onChange={(e) => setTripType(e.target.value)}
+                    className="w-4 h-4"
+                  />
+                  <span className="font-medium">Round Trip</span>
                 </label>
-                <input
-                  id="origin"
-                  type="text"
-                  placeholder="e.g., JFK or New York"
-                  value={origin}
-                  onChange={(e) => {
-                    setOrigin(e.target.value);
-                    setShowOriginDropdown(true);
-                    setErrors({...errors, origin: ''});
-                  }}
-                  onFocus={() => setShowOriginDropdown(true)}
-                  onBlur={() => setTimeout(() => setShowOriginDropdown(false), 200)}
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                    errors.origin ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  required
-                />
-                {showOriginDropdown && filteredOrigins.length > 0 && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                    {filteredOrigins.map((airport) => (
-                      <div
-                        key={airport.iataCode}
-                        onMouseDown={() => selectOrigin(airport)}
-                        className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
-                      >
-                        <div className="font-semibold">{airport.iataCode}</div>
-                        <div className="text-sm text-gray-600">{airport.city}, {airport.country}</div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {errors.origin && <p className="text-red-500 text-xs mt-1">{errors.origin}</p>}
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="oneway"
+                    checked={tripType === 'oneway'}
+                    onChange={(e) => setTripType(e.target.value)}
+                    className="w-4 h-4"
+                  />
+                  <span className="font-medium">One Way</span>
+                </label>
               </div>
 
-              {/* Destination with Autocomplete */}
-              <div className="relative">
-                <label htmlFor="destination" className="block text-sm font-medium mb-2">
-                  To <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="destination"
-                  type="text"
-                  placeholder="e.g., LAX or Los Angeles"
-                  value={destination}
-                  onChange={(e) => {
-                    setDestination(e.target.value);
-                    setShowDestDropdown(true);
-                    setErrors({...errors, destination: ''});
-                  }}
-                  onFocus={() => setShowDestDropdown(true)}
-                  onBlur={() => setTimeout(() => setShowDestDropdown(false), 200)}
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                    errors.destination ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  required
-                />
-                {showDestDropdown && filteredDestinations.length > 0 && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                    {filteredDestinations.map((airport) => (
-                      <div
-                        key={airport.iataCode}
-                        onMouseDown={() => selectDestination(airport)}
-                        className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
-                      >
-                        <div className="font-semibold">{airport.iataCode}</div>
-                        <div className="text-sm text-gray-600">{airport.city}, {airport.country}</div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {errors.destination && <p className="text-red-500 text-xs mt-1">{errors.destination}</p>}
-              </div>
-
-              {/* Departure Date */}
-              <div>
-                <label htmlFor="departureDate" className="block text-sm font-medium mb-2">
-                  Departure Date <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="departureDate"
-                  type="date"
-                  value={departureDate}
-                  min={today}
-                  onChange={(e) => {
-                    setDepartureDate(e.target.value);
-                    setErrors({...errors, departureDate: ''});
-                  }}
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                    errors.departureDate ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  required
-                />
-                {errors.departureDate && <p className="text-red-500 text-xs mt-1">{errors.departureDate}</p>}
-              </div>
-
-              {/* Return Date (if round trip) */}
-              {tripType === 'roundtrip' && (
-                <div>
-                  <label htmlFor="returnDate" className="block text-sm font-medium mb-2">
-                    Return Date <span className="text-red-500">*</span>
+              {/* Search Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                {/* Origin with Autocomplete */}
+                <div className="relative">
+                  <label htmlFor="origin" className="block text-sm font-medium mb-2">
+                    From <span className="text-red-500">*</span>
                   </label>
                   <input
-                    id="returnDate"
-                    type="date"
-                    value={returnDate}
-                    min={departureDate || today}
+                    id="origin"
+                    type="text"
+                    placeholder="e.g., JFK or New York"
+                    value={origin}
                     onChange={(e) => {
-                      setReturnDate(e.target.value);
-                      setErrors({...errors, returnDate: ''});
+                      setOrigin(e.target.value);
+                      setShowOriginDropdown(true);
+                      setErrors({...errors, origin: ''});
                     }}
+                    onFocus={() => setShowOriginDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowOriginDropdown(false), 200)}
                     className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                      errors.returnDate ? 'border-red-500' : 'border-gray-300'
+                      errors.origin ? 'border-red-500' : 'border-gray-300'
                     }`}
                     required
                   />
-                  {errors.returnDate && <p className="text-red-500 text-xs mt-1">{errors.returnDate}</p>}
+                  {showOriginDropdown && filteredOrigins.length > 0 && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                      {filteredOrigins.map((airport) => (
+                        <div
+                          key={airport.iataCode}
+                          onMouseDown={() => selectOrigin(airport)}
+                          className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
+                        >
+                          <div className="font-semibold">{airport.iataCode}</div>
+                          <div className="text-sm text-gray-600">{airport.city}, {airport.country}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {errors.origin && <p className="text-red-500 text-xs mt-1">{errors.origin}</p>}
                 </div>
-              )}
 
-              {/* Passengers */}
-              <div>
-                <label htmlFor="passengers" className="block text-sm font-medium mb-2">
-                  Passengers <span className="text-red-500">*</span>
-                </label>
-                <select
-                  id="passengers"
-                  value={passengers}
-                  onChange={(e) => setPassengers(Number(e.target.value))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                >
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-                    <option key={num} value={num}>
-                      {num} Passenger{num > 1 ? 's' : ''}
-                    </option>
-                  ))}
-                </select>
+                {/* Destination with Autocomplete */}
+                <div className="relative">
+                  <label htmlFor="destination" className="block text-sm font-medium mb-2">
+                    To <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="destination"
+                    type="text"
+                    placeholder="e.g., LAX or Los Angeles"
+                    value={destination}
+                    onChange={(e) => {
+                      setDestination(e.target.value);
+                      setShowDestDropdown(true);
+                      setErrors({...errors, destination: ''});
+                    }}
+                    onFocus={() => setShowDestDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowDestDropdown(false), 200)}
+                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
+                      errors.destination ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    required
+                  />
+                  {showDestDropdown && filteredDestinations.length > 0 && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                      {filteredDestinations.map((airport) => (
+                        <div
+                          key={airport.iataCode}
+                          onMouseDown={() => selectDestination(airport)}
+                          className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
+                        >
+                          <div className="font-semibold">{airport.iataCode}</div>
+                          <div className="text-sm text-gray-600">{airport.city}, {airport.country}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {errors.destination && <p className="text-red-500 text-xs mt-1">{errors.destination}</p>}
+                </div>
+
+                {/* Departure Date */}
+                <div>
+                  <label htmlFor="departureDate" className="block text-sm font-medium mb-2">
+                    Departure Date <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="departureDate"
+                    type="date"
+                    value={departureDate}
+                    min={today}
+                    onChange={(e) => {
+                      setDepartureDate(e.target.value);
+                      setErrors({...errors, departureDate: ''});
+                    }}
+                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
+                      errors.departureDate ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    required
+                  />
+                  {errors.departureDate && <p className="text-red-500 text-xs mt-1">{errors.departureDate}</p>}
+                </div>
+
+                {/* Return Date (if round trip) */}
+                {tripType === 'roundtrip' && (
+                  <div>
+                    <label htmlFor="returnDate" className="block text-sm font-medium mb-2">
+                      Return Date <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      id="returnDate"
+                      type="date"
+                      value={returnDate}
+                      min={departureDate || today}
+                      onChange={(e) => {
+                        setReturnDate(e.target.value);
+                        setErrors({...errors, returnDate: ''});
+                      }}
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
+                        errors.returnDate ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                      required
+                    />
+                    {errors.returnDate && <p className="text-red-500 text-xs mt-1">{errors.returnDate}</p>}
+                  </div>
+                )}
+
+                {/* Passengers */}
+                <div>
+                  <label htmlFor="passengers" className="block text-sm font-medium mb-2">
+                    Passengers <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    id="passengers"
+                    value={passengers}
+                    onChange={(e) => setPassengers(Number(e.target.value))}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                      <option key={num} value={num}>
+                        {num} Passenger{num > 1 ? 's' : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
+
+              {/* Search Button */}
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition"
+              >
+                Search Flights
+              </button>
+            </form>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-lg font-bold">Popular Routes</h2>
+                <p className="text-sm text-gray-500">The routes travelers book most often.</p>
+              </div>
+              {homepageInsightsError && <span className="text-xs text-red-500">Insights unavailable</span>}
             </div>
 
-            {/* Search Button */}
-            <button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition"
-            >
-              Search Flights
-            </button>
-          </form>
+            {homepageInsightsLoading ? (
+              <div className="text-sm text-gray-500">Loading route insights...</div>
+            ) : topRoutes.length > 0 ? (
+              <div className="space-y-3">
+                {topRoutes.map((route, index) => (
+                  <div key={`${route.origin}-${route.destination}-${index}`} className={`rounded-lg border p-4 ${index === 0 ? 'border-blue-200 bg-blue-50' : 'border-gray-100 bg-gray-50'}`}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-semibold text-gray-900">{route.route}</p>
+                        <p className="text-xs text-gray-500 mt-1">{route.count} bookings · {formatCurrency(route.revenue)} revenue</p>
+                      </div>
+                      {index === 0 && <span className="rounded-full bg-blue-600 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-white">Top</span>}
+                    </div>
+                    <div className="mt-3 flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => applyPopularRoute(route)}
+                        className="rounded-md bg-white px-3 py-2 text-xs font-semibold text-blue-700 ring-1 ring-blue-200 hover:bg-blue-50"
+                      >
+                        Use in form
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => searchPopularRoute(route)}
+                        className="rounded-md bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+                      >
+                        Search this route
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-sm text-gray-500">No route history yet. New insights will appear after bookings are made.</div>
+            )}
+          </div>
         </div>
-      </div>
+        </div>
 
       {/* Features Section */}
       <div className="bg-gray-100 py-12">
