@@ -53,6 +53,20 @@ export interface CurrentUserProfile {
   updatedAt?: string;
 }
 
+export interface UpdateCurrentUserPayload {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  dateOfBirth?: string;
+  passportNumber?: string;
+  nationality?: string;
+  preferences?: {
+    seatPreference?: 'window' | 'middle' | 'aisle';
+    mealPreference?: string;
+    newsletterOptIn?: boolean;
+  };
+}
+
 class ApiService {
   private getHeaders(token?: string): HeadersInit {
     const headers: HeadersInit = { 'Content-Type': 'application/json' };
@@ -235,6 +249,19 @@ class ApiService {
     const response = await this.fetchWithRefresh(
       `${API_BASE_URL}/auth/me`,
       { headers: this.getHeaders(token) },
+      token
+    );
+    return this.handleResponse(response);
+  }
+
+  async updateCurrentUser(token: string, payload: UpdateCurrentUserPayload) {
+    const response = await this.fetchWithRefresh(
+      `${API_BASE_URL}/auth/me`,
+      {
+        method: 'PUT',
+        headers: this.getHeaders(token),
+        body: JSON.stringify(payload),
+      },
       token
     );
     return this.handleResponse(response);

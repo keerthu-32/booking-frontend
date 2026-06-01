@@ -29,11 +29,23 @@ const statusColors: Record<string, string> = {
 };
 
 const AccountPage: React.FC = () => {
-  const { accessToken } = useAuth();
+  const { accessToken, setUserProfile } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<CurrentUserProfile | null>(null);
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    dateOfBirth: '',
+    passportNumber: '',
+    nationality: '',
+    seatPreference: 'window' as 'window' | 'middle' | 'aisle',
+    mealPreference: '',
+    newsletterOptIn: true,
+  });
   const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
 
@@ -53,6 +65,18 @@ const AccountPage: React.FC = () => {
         ]);
 
         setProfile(profileResponse.data);
+        const user = profileResponse.data;
+        setForm({
+          firstName: user.firstName || '',
+          lastName: user.lastName || '',
+          phone: user.phone || '',
+          dateOfBirth: user.dateOfBirth ? String(user.dateOfBirth).slice(0, 10) : '',
+          passportNumber: user.passportNumber || '',
+          nationality: user.nationality || '',
+          seatPreference: user.preferences?.seatPreference || 'window',
+          mealPreference: user.preferences?.mealPreference || '',
+          newsletterOptIn: user.preferences?.newsletterOptIn ?? true,
+        });
         setBookings(bookingsResponse.data || []);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load account data');
@@ -84,6 +108,48 @@ const AccountPage: React.FC = () => {
     const cancelled = bookings.filter((booking) => booking.status === 'cancelled').length;
     return { confirmed, pending, cancelled, total: bookings.length };
   }, [bookings]);
+
+  const handleSave = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!accessToken) return;
+
+    try {
+      setSaving(true);
+      setError(null);
+
+      const payload = {
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        phone: form.phone.trim(),
+        dateOfBirth: form.dateOfBirth || undefined,
+        passportNumber: form.passportNumber.trim(),
+        nationality: form.nationality.trim(),
+        preferences: {
+          seatPreference: form.seatPreference,
+          mealPreference: form.mealPreference.trim(),
+          newsletterOptIn: form.newsletterOptIn,
+        },
+      };
+
+      const response = await apiService.updateCurrentUser(accessToken, payload);
+      setProfile(response.data);
+      setUserProfile({
+        _id: response.data._id,
+        firstName: response.data.firstName,
+        lastName: response.data.lastName,
+        email: response.data.email,
+        phone: response.data.phone,
+        dateOfBirth: response.data.dateOfBirth,
+        passportNumber: response.data.passportNumber,
+        nationality: response.data.nationality,
+        role: response.data.role,
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save profile');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   if (!accessToken) {
     return (
@@ -122,19 +188,64 @@ const AccountPage: React.FC = () => {
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="bg-white rounded-lg shadow p-6 lg:col-span-1">
-          <h2 className="text-lg font-bold mb-4">User Details</h2>
-          {profile ? (
-            <div className="space-y-3 text-sm">
-              <div><span className="text-gray-500">Name:</span> <span className="font-medium">{profile.firstName} {profile.lastName}</span></div>
+          <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
+          {profile && (
+            <div className="mb-4 rounded-lg bg-gray-50 border p-3 text-sm text-gray-600">
               <div><span className="text-gray-500">Email:</span> <span className="font-medium">{profile.email}</span></div>
-              <div><span className="text-gray-500">Phone:</span> <span className="font-medium">{profile.phone || '—'}</span></div>
-              <div><span className="text-gray-500">Passport:</span> <span className="font-medium">{profile.passportNumber || '—'}</span></div>
-              <div><span className="text-gray-500">Nationality:</span> <span className="font-medium">{profile.nationality || '—'}</span></div>
               <div><span className="text-gray-500">Role:</span> <span className="font-medium capitalize">{profile.role}</span></div>
             </div>
-          ) : (
-            <p className="text-gray-500 text-sm">No profile data found.</p>
           )}
+          <form className="space-y-4" onSubmit={handleSave}>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <label className="block text-sm">
+                <span className="text-gray-500">First name</span>
+                <input className="mt-1 w-full border rounded-lg px-3 py-2" value={form.firstName} onChange={(e) => setForm((p) => ({ ...p, firstName: e.target.value }))} />
+              </label>
+              <label className="block text-sm">
+                <span className="text-gray-500">Last name</span>
+                <input className="mt-1 w-full border rounded-lg px-3 py-2" value={form.lastName} onChange={(e) => setForm((p) => ({ ...p, lastName: e.target.value }))} />
+              </label>
+            </div>
+            <label className="block text-sm">
+              <span className="text-gray-500">Phone</span>
+              <input className="mt-1 w-full border rounded-lg px-3 py-2" value={form.phone} onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))} />
+            </label>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <label className="block text-sm">
+                <span className="text-gray-500">Date of birth</span>
+                <input type="date" className="mt-1 w-full border rounded-lg px-3 py-2" value={form.dateOfBirth} onChange={(e) => setForm((p) => ({ ...p, dateOfBirth: e.target.value }))} />
+              </label>
+              <label className="block text-sm">
+                <span className="text-gray-500">Nationality</span>
+                <input className="mt-1 w-full border rounded-lg px-3 py-2" value={form.nationality} onChange={(e) => setForm((p) => ({ ...p, nationality: e.target.value }))} />
+              </label>
+            </div>
+            <label className="block text-sm">
+              <span className="text-gray-500">Passport number</span>
+              <input className="mt-1 w-full border rounded-lg px-3 py-2" value={form.passportNumber} onChange={(e) => setForm((p) => ({ ...p, passportNumber: e.target.value }))} />
+            </label>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <label className="block text-sm">
+                <span className="text-gray-500">Seat preference</span>
+                <select className="mt-1 w-full border rounded-lg px-3 py-2" value={form.seatPreference} onChange={(e) => setForm((p) => ({ ...p, seatPreference: e.target.value as 'window' | 'middle' | 'aisle' }))}>
+                  <option value="window">Window</option>
+                  <option value="middle">Middle</option>
+                  <option value="aisle">Aisle</option>
+                </select>
+              </label>
+              <label className="block text-sm">
+                <span className="text-gray-500">Meal preference</span>
+                <input className="mt-1 w-full border rounded-lg px-3 py-2" value={form.mealPreference} onChange={(e) => setForm((p) => ({ ...p, mealPreference: e.target.value }))} />
+              </label>
+            </div>
+            <label className="flex items-center gap-2 text-sm text-gray-600">
+              <input type="checkbox" checked={form.newsletterOptIn} onChange={(e) => setForm((p) => ({ ...p, newsletterOptIn: e.target.checked }))} />
+              Subscribe to travel updates
+            </label>
+            <button type="submit" disabled={saving} className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded-lg transition">
+              {saving ? 'Saving...' : 'Save Changes'}
+            </button>
+          </form>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6 lg:col-span-2">

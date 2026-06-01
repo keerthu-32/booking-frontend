@@ -5,6 +5,10 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
+  phone?: string;
+  dateOfBirth?: string;
+  passportNumber?: string;
+  nationality?: string;
   role: 'user' | 'admin';
 }
 
@@ -15,6 +19,7 @@ export interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (firstName: string, lastName: string, email: string, password: string, phone: string) => Promise<void>;
   logout: () => Promise<void>;
+  setUserProfile: (user: User) => void;
   loading: boolean;
   error: string | null;
 }
@@ -125,6 +130,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const setUserProfile = (updatedUser: User) => {
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -134,6 +144,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         register,
         logout,
+        setUserProfile,
         loading,
         error,
       }}
