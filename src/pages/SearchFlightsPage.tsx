@@ -22,6 +22,8 @@ interface Airport {
   country: string;
 }
 
+const normalizeAirportQuery = (value: string) => value.trim().toUpperCase();
+
 const today = new Date().toISOString().split('T')[0];
 
 const SearchFlightsPage: React.FC = () => {
@@ -101,8 +103,8 @@ const SearchFlightsPage: React.FC = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params: any = { passengers: String(passengers) };
-    if (origin) params.origin = origin;
-    if (destination) params.destination = destination;
+    if (origin) params.origin = normalizeAirportQuery(origin);
+    if (destination) params.destination = normalizeAirportQuery(destination);
     if (departureDate) params.departureDate = departureDate;
     setSearchParams(params);
   };
@@ -113,13 +115,16 @@ const SearchFlightsPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Search Bar */}
       <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-        <h2 className="text-lg font-bold mb-4">Search Flights</h2>
+        <div className="mb-4">
+          <h2 className="text-lg font-bold">Search Flights</h2>
+          <p className="text-sm text-gray-500">Search by airport code or city, then filter by date and passenger count.</p>
+        </div>
         <form onSubmit={handleSearch}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <div className="relative">
               <label className="block text-xs font-medium text-gray-600 mb-1">From</label>
-              <input type="text" placeholder="City or code" value={origin} maxLength={3}
-                onChange={(e) => { setOrigin(e.target.value.toUpperCase()); setShowOriginDrop(true); }}
+              <input type="text" placeholder="City or code" value={origin}
+                onChange={(e) => { setOrigin(e.target.value); setShowOriginDrop(true); }}
                 onFocus={() => setShowOriginDrop(true)}
                 onBlur={() => setTimeout(() => setShowOriginDrop(false), 150)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-sm"
@@ -139,8 +144,8 @@ const SearchFlightsPage: React.FC = () => {
 
             <div className="relative">
               <label className="block text-xs font-medium text-gray-600 mb-1">To</label>
-              <input type="text" placeholder="City or code" value={destination} maxLength={3}
-                onChange={(e) => { setDestination(e.target.value.toUpperCase()); setShowDestDrop(true); }}
+              <input type="text" placeholder="City or code" value={destination}
+                onChange={(e) => { setDestination(e.target.value); setShowDestDrop(true); }}
                 onFocus={() => setShowDestDrop(true)}
                 onBlur={() => setTimeout(() => setShowDestDrop(false), 150)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-sm"

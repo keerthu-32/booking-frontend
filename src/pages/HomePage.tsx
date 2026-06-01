@@ -185,13 +185,12 @@ const HomePage: React.FC = () => {
                   placeholder="e.g., JFK or New York"
                   value={origin}
                   onChange={(e) => {
-                    setOrigin(e.target.value.toUpperCase());
+                    setOrigin(e.target.value);
                     setShowOriginDropdown(true);
                     setErrors({...errors, origin: ''});
                   }}
                   onFocus={() => setShowOriginDropdown(true)}
                   onBlur={() => setTimeout(() => setShowOriginDropdown(false), 200)}
-                  maxLength={3}
                   className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
                     errors.origin ? 'border-red-500' : 'border-gray-300'
                   }`}
@@ -225,13 +224,12 @@ const HomePage: React.FC = () => {
                   placeholder="e.g., LAX or Los Angeles"
                   value={destination}
                   onChange={(e) => {
-                    setDestination(e.target.value.toUpperCase());
+                    setDestination(e.target.value);
                     setShowDestDropdown(true);
                     setErrors({...errors, destination: ''});
                   }}
                   onFocus={() => setShowDestDropdown(true)}
                   onBlur={() => setTimeout(() => setShowDestDropdown(false), 200)}
-                  maxLength={3}
                   className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
                     errors.destination ? 'border-red-500' : 'border-gray-300'
                   }`}

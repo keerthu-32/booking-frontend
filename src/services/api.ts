@@ -64,15 +64,20 @@ class ApiService {
               ...options,
               headers: { ...options.headers, Authorization: `Bearer ${newToken}` },
             };
-            return fetch(url, retryOptions);
+            const retryResponse = await fetch(url, retryOptions);
+
+            if (retryResponse.status !== 401) {
+              return retryResponse;
+            }
           }
         } catch {
-          // Refresh failed - clear auth
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-          localStorage.removeItem('user');
-          window.location.href = '/login';
         }
+
+        // Refresh failed - clear auth
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
       }
     }
 

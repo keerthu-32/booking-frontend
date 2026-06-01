@@ -8,11 +8,15 @@ interface Analytics {
   confirmedBookings: number;
   cancelledBookings: number;
   pendingBookings: number;
+  totalUsers: number;
+  activeUsers: number;
   totalRevenue: number;
   averageBookingValue: number;
   cancellationRate: number;
   topRoutes: Array<{ route: string; count: number; revenue: number }>;
   bookingsByMonth: Array<{ month: string; count: number; revenue: number }>;
+  salesByMonth: Array<{ month: string; bookings: number; revenue: number }>;
+  topUsers: Array<{ userId: string; name: string; email?: string; bookings: number; revenue: number; lastBookingAt: string }>;
   recentBookings: Array<{
     bookingReference: string;
     route: string;
@@ -36,6 +40,39 @@ const AnalyticsPage: React.FC = () => {
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const downloadReport = (format: 'json' | 'csv') => {
+    if (!analytics) return;
+
+    if (format === 'json') {
+      const blob = new Blob([JSON.stringify(analytics, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `flightbook-report-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      return;
+    }
+
+    const rows = [
+      ['Metric', 'Value'],
+      ['Total Bookings', String(analytics.totalBookings)],
+      ['Total Revenue', String(analytics.totalRevenue.toFixed(2))],
+      ['Average Booking Value', String(analytics.averageBookingValue.toFixed(2))],
+      ['Cancellation Rate', String(analytics.cancellationRate.toFixed(2))],
+      ['Total Users', String(analytics.totalUsers)],
+      ['Active Users (30d)', String(analytics.activeUsers)],
+    ];
+    const csv = rows.map((row) => row.map((cell) => `"${cell}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `flightbook-report-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   useEffect(() => {
     if (!accessToken || user?.role !== 'admin') return;
@@ -83,16 +120,26 @@ const AnalyticsPage: React.FC = () => {
           <h1 className="text-3xl font-bold">Reports & Analytics</h1>
           <p className="text-gray-500 text-sm mt-1">Booking trends, sales performance, and user activity</p>
         </div>
-        <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">Admin</span>
+        <div className="flex items-center gap-3">
+          <button onClick={() => downloadReport('json')} className="bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold px-3 py-2 rounded-lg">
+            Export JSON
+          </button>
+          <button onClick={() => downloadReport('csv')} className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-2 rounded-lg">
+            Export CSV
+          </button>
+          <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">Admin</span>
+        </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
         <StatCard label="Total Bookings" value={String(analytics.totalBookings)} />
         <StatCard label="Total Revenue" value={`$${analytics.totalRevenue.toFixed(0)}`} color="green" />
         <StatCard label="Avg Booking Value" value={`$${analytics.averageBookingValue.toFixed(0)}`} color="purple" />
         <StatCard label="Cancellation Rate" value={`${analytics.cancellationRate.toFixed(1)}%`}
           sub={`${analytics.cancelledBookings} cancelled`} color="red" />
+        <StatCard label="Total Users" value={String(analytics.totalUsers)} color="blue" />
+        <StatCard label="Active Users (30d)" value={String(analytics.activeUsers)} color="green" />
       </div>
 
       {/* Status Breakdown */}
@@ -137,7 +184,7 @@ const AnalyticsPage: React.FC = () => {
 
         {/* Monthly Bookings */}
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-lg font-bold mb-4">Bookings by Month</h2>
+          <h2 className="text-lg font-bold mb-4">Booking Trends</h2>
           {analytics.bookingsByMonth.length === 0 ? (
             <p className="text-gray-400 text-sm">No data available</p>
           ) : (
@@ -148,6 +195,54 @@ const AnalyticsPage: React.FC = () => {
                   <div className="text-right">
                     <span className="text-sm font-bold">{m.count} bookings</span>
                     <span className="text-xs text-gray-400 ml-2">${m.revenue.toFixed(0)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-8 mb-8">
+        {/* Sales Performance */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-lg font-bold mb-4">Sales Performance</h2>
+          {analytics.salesByMonth.length === 0 ? (
+            <p className="text-gray-400 text-sm">No sales data available</p>
+          ) : (
+            <div className="space-y-3">
+              {analytics.salesByMonth.map((item, index) => (
+                <div key={index} className="p-3 rounded-lg bg-gray-50 border border-gray-100">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium text-sm">{item.month}</span>
+                    <span className="text-sm text-gray-600">{item.bookings} bookings</span>
+                  </div>
+                  <div className="mt-2 flex justify-between text-sm">
+                    <span className="text-gray-500">Revenue</span>
+                    <span className="font-semibold text-green-700">${item.revenue.toFixed(0)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* User Activity */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-lg font-bold mb-4">User Activity</h2>
+          {analytics.topUsers.length === 0 ? (
+            <p className="text-gray-400 text-sm">No user activity available</p>
+          ) : (
+            <div className="space-y-3">
+              {analytics.topUsers.map((u, index) => (
+                <div key={u.userId || index} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-100">
+                  <div>
+                    <p className="font-medium text-sm">{u.name || 'Unknown user'}</p>
+                    <p className="text-xs text-gray-500">{u.email || 'No email available'}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold">{u.bookings} bookings</p>
+                    <p className="text-xs text-gray-500">${u.revenue.toFixed(0)} spent</p>
                   </div>
                 </div>
               ))}

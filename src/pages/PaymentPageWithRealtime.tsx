@@ -23,7 +23,7 @@ const PaymentPageWithRealtime: React.FC = () => {
   const state = location.state as PaymentPageState;
 
   const [paymentMethod, setPaymentMethod] = useState('card');
-  const [provider, setProvider] = useState('stripe');
+  const [provider, setProvider] = useState('razorpay');
   const [cardName, setCardName] = useState('');
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
