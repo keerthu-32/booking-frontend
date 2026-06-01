@@ -26,6 +26,9 @@ const Navigation: React.FC = () => {
 
             {isLoggedIn ? (
               <>
+                <Link to="/account" className="hover:text-blue-100">
+                  Account
+                </Link>
                 <Link to="/my-bookings" className="hover:text-blue-100">
                   My Bookings
                 </Link>

@@ -33,6 +33,26 @@ export interface PaymentData {
   provider: string;
 }
 
+export interface CurrentUserProfile {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  dateOfBirth?: string;
+  passportNumber?: string;
+  nationality?: string;
+  preferences?: {
+    seatPreference?: 'window' | 'middle' | 'aisle';
+    mealPreference?: string;
+    newsletterOptIn?: boolean;
+  };
+  role: 'user' | 'admin';
+  isVerified?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 class ApiService {
   private getHeaders(token?: string): HeadersInit {
     const headers: HeadersInit = { 'Content-Type': 'application/json' };
@@ -205,6 +225,15 @@ class ApiService {
   async getAnalytics(token: string) {
     const response = await this.fetchWithRefresh(
       `${API_BASE_URL}/bookings/admin/analytics`,
+      { headers: this.getHeaders(token) },
+      token
+    );
+    return this.handleResponse(response);
+  }
+
+  async getCurrentUser(token: string) {
+    const response = await this.fetchWithRefresh(
+      `${API_BASE_URL}/auth/me`,
       { headers: this.getHeaders(token) },
       token
     );

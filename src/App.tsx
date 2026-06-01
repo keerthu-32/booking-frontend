@@ -7,6 +7,7 @@ import FlightDetailsPage from './pages/FlightDetailsPage';
 import BookingPage from './pages/BookingPage';
 import PaymentPage from './pages/PaymentPage';
 import MyBookingsPage from './pages/MyBookingsPage';
+import AccountPage from './pages/AccountPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AnalyticsPage from './pages/AnalyticsPage';
@@ -30,6 +31,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/booking/:flightId" element={<BookingPage />} />
             <Route path="/payment/:bookingId" element={<PaymentPage />} />
+            <Route path="/account" element={<AccountPage />} />
             <Route path="/my-bookings" element={<MyBookingsPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
           </Route>
