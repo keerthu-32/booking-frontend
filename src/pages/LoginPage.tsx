@@ -21,7 +21,9 @@ const LoginPage: React.FC = () => {
       setLoading(true);
       setError(null);
       await login(email, password);
-      navigate(from, { replace: true });
+      const storedUser = localStorage.getItem('user');
+      const loggedInUser = storedUser ? JSON.parse(storedUser) : null;
+      navigate(loggedInUser?.role === 'admin' && from === '/' ? '/admin' : from, { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
     } finally {

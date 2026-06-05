@@ -84,6 +84,39 @@ export interface HomepageInsights {
   featuredRoute: HomepageRouteInsight | null;
 }
 
+export interface AdminUserPayload {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  phone: string;
+  role: 'user' | 'admin';
+  dateOfBirth?: string;
+  passportNumber?: string;
+  nationality?: string;
+}
+
+export interface AdminFlightPayload {
+  flightNumber: string;
+  airline: string;
+  origin: { iataCode: string; city: string; country: string; terminal?: string };
+  destination: { iataCode: string; city: string; country: string; terminal?: string };
+  departureTime: string;
+  arrivalTime: string;
+  duration: number;
+  stops: number;
+  aircraft: string;
+  status: string;
+  cabinClasses: Array<{
+    type: 'economy' | 'business' | 'first';
+    totalSeats: number;
+    availableSeats: number;
+    baseFare: number;
+    currency: string;
+  }>;
+  amenities: string[];
+}
+
 class ApiService {
   private getHeaders(token?: string): HeadersInit {
     const headers: HeadersInit = { 'Content-Type': 'application/json' };
@@ -264,6 +297,82 @@ class ApiService {
 
   async getHomepageInsights() {
     const response = await fetch(`${API_BASE_URL}/bookings/insights`);
+    return this.handleResponse(response);
+  }
+
+  async getAdminUsers(token: string) {
+    const response = await this.fetchWithRefresh(
+      `${API_BASE_URL}/admin/users`,
+      { headers: this.getHeaders(token) },
+      token
+    );
+    return this.handleResponse(response);
+  }
+
+  async createAdminUser(token: string, payload: AdminUserPayload) {
+    const response = await this.fetchWithRefresh(
+      `${API_BASE_URL}/admin/users`,
+      { method: 'POST', headers: this.getHeaders(token), body: JSON.stringify(payload) },
+      token
+    );
+    return this.handleResponse(response);
+  }
+
+  async updateAdminUserRole(token: string, userId: string, role: 'user' | 'admin') {
+    const response = await this.fetchWithRefresh(
+      `${API_BASE_URL}/admin/users/${userId}/role`,
+      { method: 'PATCH', headers: this.getHeaders(token), body: JSON.stringify({ role }) },
+      token
+    );
+    return this.handleResponse(response);
+  }
+
+  async getAdminBookings(token: string, status = 'all') {
+    const response = await this.fetchWithRefresh(
+      `${API_BASE_URL}/admin/bookings?status=${encodeURIComponent(status)}`,
+      { headers: this.getHeaders(token) },
+      token
+    );
+    return this.handleResponse(response);
+  }
+
+  async createFlight(token: string, payload: AdminFlightPayload) {
+    const response = await this.fetchWithRefresh(
+      `${API_BASE_URL}/flights`,
+      { method: 'POST', headers: this.getHeaders(token), body: JSON.stringify(payload) },
+      token
+    );
+    return this.handleResponse(response);
+  }
+
+  async updateFlight(token: string, flightId: string, payload: Partial<AdminFlightPayload>) {
+    const response = await this.fetchWithRefresh(
+      `${API_BASE_URL}/flights/${flightId}`,
+      { method: 'PUT', headers: this.getHeaders(token), body: JSON.stringify(payload) },
+      token
+    );
+    return this.handleResponse(response);
+  }
+
+  async deleteFlight(token: string, flightId: string) {
+    const response = await this.fetchWithRefresh(
+      `${API_BASE_URL}/flights/${flightId}`,
+      { method: 'DELETE', headers: this.getHeaders(token) },
+      token
+    );
+    return this.handleResponse(response);
+  }
+
+  async updateFlightStatus(
+    token: string,
+    flightId: string,
+    payload: { status?: string; departureTime?: string; arrivalTime?: string }
+  ) {
+    const response = await this.fetchWithRefresh(
+      `${API_BASE_URL}/admin/flights/${flightId}/status`,
+      { method: 'PATCH', headers: this.getHeaders(token), body: JSON.stringify(payload) },
+      token
+    );
     return this.handleResponse(response);
   }
 

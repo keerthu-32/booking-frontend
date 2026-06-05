@@ -33,9 +33,14 @@ const Navigation: React.FC = () => {
                   My Bookings
                 </Link>
                 {user?.role === 'admin' && (
-                  <Link to="/analytics" className="hover:text-blue-100">
-                    Analytics
-                  </Link>
+                  <>
+                    <Link to="/admin" className="hover:text-blue-100">
+                      Admin
+                    </Link>
+                    <Link to="/analytics" className="hover:text-blue-100">
+                      Analytics
+                    </Link>
+                  </>
                 )}
                 <div className="flex items-center gap-4">
                   <span>{user?.firstName}</span>

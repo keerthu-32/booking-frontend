@@ -11,6 +11,7 @@ import AccountPage from './pages/AccountPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AnalyticsPage from './pages/AnalyticsPage';
+import AdminPage from './pages/AdminPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -34,6 +35,7 @@ function App() {
             <Route path="/account" element={<AccountPage />} />
             <Route path="/my-bookings" element={<MyBookingsPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
+            <Route path="/admin" element={<AdminPage />} />
           </Route>
 
           {/* Catch all */}
