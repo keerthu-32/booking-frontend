@@ -258,10 +258,13 @@ class ApiService {
     return this.handleResponse(response);
   }
 
-  async confirmPayment(paymentIntentId: string, token: string) {
+  async confirmPayment(
+    payload: { paymentIntentId: string; orderId?: string },
+    token: string
+  ) {
     const response = await this.fetchWithRefresh(
       `${API_BASE_URL}/payments/confirm`,
-      { method: 'POST', headers: this.getHeaders(token), body: JSON.stringify({ paymentIntentId }) },
+      { method: 'POST', headers: this.getHeaders(token), body: JSON.stringify(payload) },
       token
     );
     return this.handleResponse(response);

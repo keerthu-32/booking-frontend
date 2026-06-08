@@ -199,7 +199,7 @@ const HomePage: React.FC = () => {
     navigate(`/search?${searchParams.toString()}`);
   };
 
-  const formatCurrency = (value: number) => `$${value.toFixed(0)}`;
+  const formatCurrency = (value: number) => `₹${value.toFixed(0)}`;
   const featuredRoute = homepageInsights?.featuredRoute;
   const topRoutes = homepageInsights?.topRoutes || [];
 

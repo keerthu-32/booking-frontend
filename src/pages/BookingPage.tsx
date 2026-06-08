@@ -284,20 +284,20 @@ const BookingPage: React.FC = () => {
             <div className="space-y-2 mb-4">
               <div className="flex justify-between">
                 <span>Base Fare (per person)</span>
-                <span>${cabin.baseFare.toFixed(2)}</span>
+                <span>₹{cabin.baseFare.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Base Fare ({passengers.length} passengers)</span>
-                <span>${(cabin.baseFare * passengers.length).toFixed(2)}</span>
+                <span>₹{(cabin.baseFare * passengers.length).toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Taxes & Fees</span>
-                <span>${((cabin.baseFare * passengers.length * 0.125) + 15 * passengers.length).toFixed(2)}</span>
+                <span>₹{((cabin.baseFare * passengers.length * 0.125) + 15 * passengers.length).toFixed(2)}</span>
               </div>
               <div className="flex justify-between border-t-2 pt-2 text-lg font-bold">
                 <span>Total</span>
                 <span className="text-blue-600">
-                  ${(cabin.baseFare * passengers.length + (cabin.baseFare * passengers.length * 0.125) + 15 * passengers.length).toFixed(2)}
+                  ₹{(cabin.baseFare * passengers.length + (cabin.baseFare * passengers.length * 0.125) + 15 * passengers.length).toFixed(2)}
                 </span>
               </div>
             </div>

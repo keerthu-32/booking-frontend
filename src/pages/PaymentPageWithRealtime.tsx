@@ -143,25 +143,25 @@ const PaymentPageWithRealtime: React.FC = () => {
               <div className="flex justify-between">
                 <span className="text-gray-600">Base Fare:</span>
                 <span className="font-semibold">
-                  {state.fareBreakdown.currency} {state.fareBreakdown.baseFare}
+                  ₹{state.fareBreakdown.baseFare}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Taxes (12.5%):</span>
                 <span className="font-semibold">
-                  {state.fareBreakdown.currency} {state.fareBreakdown.taxes}
+                  ₹{state.fareBreakdown.taxes}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Fees:</span>
                 <span className="font-semibold">
-                  {state.fareBreakdown.currency} {state.fareBreakdown.fees}
+                  ₹{state.fareBreakdown.fees}
                 </span>
               </div>
               <div className="border-t-2 pt-2 mt-2 flex justify-between">
                 <span className="font-bold">Total Amount:</span>
                 <span className="text-xl font-bold text-blue-600">
-                  {state.fareBreakdown.currency} {state.fareBreakdown.totalAmount}
+                  ₹{state.fareBreakdown.totalAmount}
                 </span>
               </div>
             </div>
@@ -307,7 +307,7 @@ const PaymentPageWithRealtime: React.FC = () => {
                   : 'bg-blue-600 hover:bg-blue-700'
               }`}
             >
-              {loading ? '🔄 Processing...' : `Pay ${state?.fareBreakdown?.currency} ${state?.fareBreakdown?.totalAmount}`}
+              {loading ? '🔄 Processing...' : `Pay ₹${state?.fareBreakdown?.totalAmount}`}
             </button>
 
             {/* Security Notes */}
@@ -333,3 +333,4 @@ const PaymentPageWithRealtime: React.FC = () => {
 };
 
 export default PaymentPageWithRealtime;
+

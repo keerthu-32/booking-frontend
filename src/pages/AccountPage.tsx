@@ -320,7 +320,7 @@ const AccountPage: React.FC = () => {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Total Amount</p>
-                      <p className="font-bold text-xl text-blue-600">${booking.fareBreakdown.totalAmount.toFixed(2)}</p>
+                      <p className="font-bold text-xl text-blue-600">₹{booking.fareBreakdown.totalAmount.toFixed(2)}</p>
                       <p className="text-xs text-gray-400 capitalize">{booking.cabinClass} class</p>
                     </div>
                   </div>

@@ -163,7 +163,7 @@ const FlightDetailsPage: React.FC = () => {
           >
             <h3 className="text-lg font-bold capitalize mb-4">{cabin.type} Class</h3>
             <div className="space-y-2 mb-4">
-              <p className="text-2xl font-bold text-blue-600">${cabin.baseFare}</p>
+              <p className="text-2xl font-bold text-blue-600">₹{cabin.baseFare}</p>
               <p className="text-sm text-gray-600">Available Seats: {cabin.availableSeats}</p>
               <p className="text-xs text-gray-500">Total Seats: {cabin.totalSeats}</p>
             </div>
@@ -180,7 +180,7 @@ const FlightDetailsPage: React.FC = () => {
           <div className="flex justify-between items-center">
             <div>
               <p className="text-gray-600 mb-1">Total Price per Person</p>
-              <p className="text-3xl font-bold text-blue-600">${selectedCabin.baseFare}</p>
+              <p className="text-3xl font-bold text-blue-600">₹{selectedCabin.baseFare}</p>
             </div>
             <button
               onClick={handleBook}

@@ -83,7 +83,10 @@ const PaymentPage: React.FC = () => {
           try {
             // Step 3: Confirm payment with backend
             const confirmResponse = await apiService.confirmPayment(
-              response.razorpay_payment_id,
+              {
+                paymentIntentId: response.razorpay_payment_id,
+                orderId: response.razorpay_order_id,
+              },
               accessToken
             );
 
@@ -191,7 +194,7 @@ const PaymentPage: React.FC = () => {
                 ? 'Opening Payment Gateway...'
                 : !scriptLoaded
                 ? 'Loading...'
-                : `Pay ${fareBreakdown ? `$${fareBreakdown.totalAmount.toFixed(2)}` : 'Now'}`}
+                : `Pay ${fareBreakdown ? `₹${fareBreakdown.totalAmount.toFixed(2)}` : 'Now'}`}
             </button>
 
             <p className="text-xs text-gray-500 text-center mt-3">
@@ -209,20 +212,20 @@ const PaymentPage: React.FC = () => {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Base Fare</span>
-                  <span className="font-semibold">${fareBreakdown.baseFare.toFixed(2)}</span>
+                  <span className="font-semibold">₹{fareBreakdown.baseFare.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Taxes</span>
-                  <span className="font-semibold">${fareBreakdown.taxes.toFixed(2)}</span>
+                  <span className="font-semibold">₹{fareBreakdown.taxes.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Fees</span>
-                  <span className="font-semibold">${fareBreakdown.fees.toFixed(2)}</span>
+                  <span className="font-semibold">₹{fareBreakdown.fees.toFixed(2)}</span>
                 </div>
                 <div className="border-t pt-3 flex justify-between">
                   <span className="font-bold">Total</span>
                   <span className="font-bold text-blue-600 text-lg">
-                    ${fareBreakdown.totalAmount.toFixed(2)}
+                    ₹{fareBreakdown.totalAmount.toFixed(2)}
                   </span>
                 </div>
               </div>

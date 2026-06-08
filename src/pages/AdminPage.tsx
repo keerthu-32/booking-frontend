@@ -43,9 +43,9 @@ const emptyFlight: AdminFlightPayload = {
   aircraft: '',
   status: 'scheduled',
   cabinClasses: [
-    { type: 'economy', totalSeats: 120, availableSeats: 120, baseFare: 150, currency: 'USD' },
-    { type: 'business', totalSeats: 24, availableSeats: 24, baseFare: 550, currency: 'USD' },
-    { type: 'first', totalSeats: 8, availableSeats: 8, baseFare: 1200, currency: 'USD' },
+    { type: 'economy', totalSeats: 120, availableSeats: 120, baseFare: 150, currency: 'INR' },
+    { type: 'business', totalSeats: 24, availableSeats: 24, baseFare: 550, currency: 'INR' },
+    { type: 'first', totalSeats: 8, availableSeats: 8, baseFare: 1200, currency: 'INR' },
   ],
   amenities: [],
 };
@@ -435,7 +435,7 @@ const AdminPage: React.FC = () => {
                     <td className="p-3">{booking.flightId ? `${booking.flightId.flightNumber} ${booking.flightId.origin.iataCode} to ${booking.flightId.destination.iataCode}` : '-'}</td>
                     <td className="p-3">{booking.passengers.map((p) => `${p.firstName} ${p.lastName} ${p.seatNumber}`).join(', ')}</td>
                     <td className="p-3 capitalize">{booking.status}</td>
-                    <td className="p-3 font-semibold">${booking.fareBreakdown.totalAmount.toFixed(2)} {booking.fareBreakdown.currency}</td>
+                    <td className="p-3 font-semibold">₹{booking.fareBreakdown.totalAmount.toFixed(2)} {booking.fareBreakdown.currency}</td>
                     <td className="p-3">{new Date(booking.createdAt).toLocaleDateString()}</td>
                   </tr>
                 ))}

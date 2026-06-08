@@ -134,8 +134,8 @@ const AnalyticsPage: React.FC = () => {
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
         <StatCard label="Total Bookings" value={String(analytics.totalBookings)} />
-        <StatCard label="Total Revenue" value={`$${analytics.totalRevenue.toFixed(0)}`} color="green" />
-        <StatCard label="Avg Booking Value" value={`$${analytics.averageBookingValue.toFixed(0)}`} color="purple" />
+        <StatCard label="Total Revenue" value={`₹${analytics.totalRevenue.toFixed(0)}`} color="green" />
+        <StatCard label="Avg Booking Value" value={`₹${analytics.averageBookingValue.toFixed(0)}`} color="purple" />
         <StatCard label="Cancellation Rate" value={`${analytics.cancellationRate.toFixed(1)}%`}
           sub={`${analytics.cancelledBookings} cancelled`} color="red" />
         <StatCard label="Total Users" value={String(analytics.totalUsers)} color="blue" />
@@ -170,7 +170,7 @@ const AnalyticsPage: React.FC = () => {
                 <div key={i}>
                   <div className="flex justify-between text-sm mb-1">
                     <span className="font-medium">{route.route}</span>
-                    <span className="text-gray-500">{route.count} bookings · ${route.revenue.toFixed(0)}</span>
+                    <span className="text-gray-500">{route.count} bookings · ₹{route.revenue.toFixed(0)}</span>
                   </div>
                   <div className="w-full bg-gray-100 rounded-full h-2">
                     <div className="bg-blue-500 h-2 rounded-full transition-all"
@@ -194,7 +194,7 @@ const AnalyticsPage: React.FC = () => {
                   <span className="text-sm font-medium">{m.month}</span>
                   <div className="text-right">
                     <span className="text-sm font-bold">{m.count} bookings</span>
-                    <span className="text-xs text-gray-400 ml-2">${m.revenue.toFixed(0)}</span>
+                    <span className="text-xs text-gray-400 ml-2">₹{m.revenue.toFixed(0)}</span>
                   </div>
                 </div>
               ))}
@@ -219,7 +219,7 @@ const AnalyticsPage: React.FC = () => {
                   </div>
                   <div className="mt-2 flex justify-between text-sm">
                     <span className="text-gray-500">Revenue</span>
-                    <span className="font-semibold text-green-700">${item.revenue.toFixed(0)}</span>
+                    <span className="font-semibold text-green-700">₹{item.revenue.toFixed(0)}</span>
                   </div>
                 </div>
               ))}
@@ -242,7 +242,7 @@ const AnalyticsPage: React.FC = () => {
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-semibold">{u.bookings} bookings</p>
-                    <p className="text-xs text-gray-500">${u.revenue.toFixed(0)} spent</p>
+                    <p className="text-xs text-gray-500">₹{u.revenue.toFixed(0)} spent</p>
                   </div>
                 </div>
               ))}
@@ -280,7 +280,7 @@ const AnalyticsPage: React.FC = () => {
                         'bg-yellow-100 text-yellow-700'
                       }`}>{b.status}</span>
                     </td>
-                    <td className="py-2 pr-4 font-semibold">${b.amount.toFixed(2)}</td>
+                    <td className="py-2 pr-4 font-semibold">₹{b.amount.toFixed(2)}</td>
                     <td className="py-2 text-gray-400">{new Date(b.date).toLocaleDateString()}</td>
                   </tr>
                 ))}
@@ -294,3 +294,4 @@ const AnalyticsPage: React.FC = () => {
 };
 
 export default AnalyticsPage;
+

@@ -262,7 +262,7 @@ const SearchFlightsPage: React.FC = () => {
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-blue-600">
-                      ${cheapest?.baseFare ?? 'N/A'}
+                      ₹{cheapest?.baseFare ?? 'N/A'}
                     </div>
                     <div className="text-xs text-gray-400 mb-2">per person</div>
                     <button onClick={() => navigate(`/flight/${flight._id}`)}

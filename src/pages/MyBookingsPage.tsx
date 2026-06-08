@@ -91,10 +91,10 @@ ${booking.passengers.map((p, i) => `${i + 1}. ${p.firstName} ${p.lastName} | Sea
 
 FARE BREAKDOWN
 --------------
-Base Fare: $${booking.fareBreakdown.baseFare.toFixed(2)}
-Taxes: $${booking.fareBreakdown.taxes.toFixed(2)}
-Fees: $${booking.fareBreakdown.fees.toFixed(2)}
-TOTAL: $${booking.fareBreakdown.totalAmount.toFixed(2)} ${booking.fareBreakdown.currency}
+Base Fare: ₹${booking.fareBreakdown.baseFare.toFixed(2)}
+Taxes: ₹${booking.fareBreakdown.taxes.toFixed(2)}
+Fees: ₹${booking.fareBreakdown.fees.toFixed(2)}
+TOTAL: ₹${booking.fareBreakdown.totalAmount.toFixed(2)} ${booking.fareBreakdown.currency}
 
 Thank you for booking with FlightBook!
     `.trim();
@@ -210,7 +210,7 @@ Thank you for booking with FlightBook!
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Total Amount</p>
                       <p className="font-bold text-xl text-blue-600">
-                        ${booking.fareBreakdown.totalAmount.toFixed(2)}
+                        ₹{booking.fareBreakdown.totalAmount.toFixed(2)}
                       </p>
                       <p className="text-xs text-gray-400 capitalize">{booking.cabinClass} class</p>
                     </div>
