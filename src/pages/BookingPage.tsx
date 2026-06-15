@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -27,6 +27,8 @@ const BookingPage: React.FC = () => {
   ]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [occupiedSeats, setOccupiedSeats] = useState<string[]>([]);
+  const [loadingSeats, setLoadingSeats] = useState(true);
 
   if (!flight || !flightId) {
     return (
@@ -37,6 +39,28 @@ const BookingPage: React.FC = () => {
       </div>
     );
   }
+
+  // Fetch occupied seats when component mounts
+  useEffect(() => {
+    const fetchOccupiedSeats = async () => {
+      try {
+        setLoadingSeats(true);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL || 'https://booking-backend-final.onrender.com/api/v1'}/bookings/flights/${flightId}/occupied-seats`
+        );
+        const data = await response.json();
+        if (data.success) {
+          setOccupiedSeats(data.data.occupiedSeats);
+        }
+      } catch (err) {
+        console.error('Failed to fetch occupied seats:', err);
+      } finally {
+        setLoadingSeats(false);
+      }
+    };
+
+    fetchOccupiedSeats();
+  }, [flightId]);
 
   const handlePassengerChange = (index: number, field: string, value: string) => {
     const newPassengers = [...passengers];
@@ -72,6 +96,23 @@ const BookingPage: React.FC = () => {
       // Validate all passengers
       if (passengers.some((p) => !p.firstName || !p.lastName || !p.passportNumber || !p.dateOfBirth)) {
         setError('Please fill in all passenger details');
+        setLoading(false);
+        return;
+      }
+
+      // Check for duplicate seats within this booking
+      const seatNumbers = passengers.map((p) => p.seatNumber).filter((s) => s);
+      const uniqueSeats = new Set(seatNumbers);
+      if (seatNumbers.length !== uniqueSeats.size) {
+        setError('Duplicate seat numbers detected. Each passenger must have a unique seat.');
+        setLoading(false);
+        return;
+      }
+
+      // Check if any selected seats are already occupied
+      const conflictingSeats = seatNumbers.filter((seat) => occupiedSeats.includes(seat));
+      if (conflictingSeats.length > 0) {
+        setError(`The following seats are already booked: ${conflictingSeats.join(', ')}. Please select different seats.`);
         setLoading(false);
         return;
       }
@@ -145,6 +186,17 @@ const BookingPage: React.FC = () => {
       <form onSubmit={handleBooking}>
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <h2 className="text-xl font-bold mb-6">Passenger Details</h2>
+
+          {/* Show occupied seats info */}
+          {!loadingSeats && occupiedSeats.length > 0 && (
+            <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-sm font-semibold text-yellow-800 mb-2">⚠️ Already Occupied Seats:</p>
+              <p className="text-sm text-yellow-700">
+                {occupiedSeats.join(', ')}
+              </p>
+              <p className="text-xs text-yellow-600 mt-1">Please select different seat numbers for your passengers.</p>
+            </div>
+          )}
 
           {passengers.map((passenger, index) => (
             <div key={index} className="mb-8 pb-8 border-b last:border-b-0">

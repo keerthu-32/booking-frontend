@@ -484,25 +484,6 @@ const HomePage: React.FC = () => {
           </div>
         </div>
         </div>
-
-      {/* Features Section */}
-      <div className="bg-gray-100 py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8 text-center">Why Choose FlightBook?</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { title: 'Best Prices', description: 'Compare prices from all airlines and book the cheapest flights' },
-              { title: 'Easy Booking', description: 'Simple and secure booking process with multiple payment options' },
-              { title: '24/7 Support', description: 'Customer support available round the clock for all queries' },
-            ].map((feature, idx) => (
-              <div key={idx} className="bg-white p-6 rounded-lg shadow">
-                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
