@@ -109,8 +109,25 @@ const BookingPage: React.FC = () => {
         return;
       }
 
+      // Re-fetch occupied seats fresh from the server immediately before submitting.
+      // This closes the gap where a stale cached list (loaded on page mount) could
+      // allow two users to book the same seat if they opened the page at the same time.
+      let freshOccupiedSeats = occupiedSeats;
+      try {
+        const refreshResponse = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL || 'https://booking-backend-final.onrender.com/api/v1'}/bookings/flights/${flightId}/occupied-seats`
+        );
+        const refreshData = await refreshResponse.json();
+        if (refreshData.success) {
+          freshOccupiedSeats = refreshData.data.occupiedSeats;
+          setOccupiedSeats(freshOccupiedSeats);
+        }
+      } catch {
+        // Non-fatal: backend transaction will still catch conflicts; proceed with cached list
+      }
+
       // Check if any selected seats are already occupied
-      const conflictingSeats = seatNumbers.filter((seat) => occupiedSeats.includes(seat));
+      const conflictingSeats = seatNumbers.filter((seat) => freshOccupiedSeats.includes(seat));
       if (conflictingSeats.length > 0) {
         setError(`The following seats are already booked: ${conflictingSeats.join(', ')}. Please select different seats.`);
         setLoading(false);
@@ -294,9 +311,23 @@ const BookingPage: React.FC = () => {
                     placeholder="Seat Number (e.g., 1A)"
                     value={passenger.seatNumber}
                     onChange={(e) => handlePassengerChange(index, 'seatNumber', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none ${
+                      passenger.seatNumber &&
+                      (occupiedSeats.includes(passenger.seatNumber) ||
+                        passengers.some((p, i) => i !== index && p.seatNumber === passenger.seatNumber && passenger.seatNumber !== ''))
+                        ? 'border-red-500 bg-red-50 focus:border-red-500'
+                        : 'border-gray-300 focus:border-blue-500'
+                    }`}
                     required
                   />
+                  {passenger.seatNumber && occupiedSeats.includes(passenger.seatNumber) && (
+                    <p className="text-red-500 text-xs mt-1">This seat is already booked.</p>
+                  )}
+                  {passenger.seatNumber &&
+                    !occupiedSeats.includes(passenger.seatNumber) &&
+                    passengers.some((p, i) => i !== index && p.seatNumber === passenger.seatNumber && passenger.seatNumber !== '') && (
+                    <p className="text-red-500 text-xs mt-1">Duplicate seat — each passenger needs a unique seat.</p>
+                  )}
                 </div>
                 <div className="md:col-span-2">
                   <label htmlFor={`mealPreference-${index}`} className="block text-sm font-medium mb-2">

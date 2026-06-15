@@ -245,12 +245,12 @@ const HomePage: React.FC = () => {
             <p className="mt-2 text-sm text-gray-600">Average confirmed booking amount across the network.</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6 border border-red-100">
-            <p className="text-sm text-gray-500">Cancellation Rate</p>
-            <p className="mt-2 text-3xl font-bold text-red-700">
-              {homepageInsightsLoading ? 'Loading...' : `${(homepageInsights?.cancellationRate || 0).toFixed(1)}%`}
+          <div className="bg-white rounded-lg shadow-lg p-6 border border-purple-100">
+            <p className="text-sm text-gray-500">Bookings Made</p>
+            <p className="mt-2 text-3xl font-bold text-purple-700">
+              {homepageInsightsLoading ? 'Loading...' : (homepageInsights?.totalBookings || 0).toLocaleString()}
             </p>
-            <p className="mt-2 text-sm text-gray-600">Share of bookings that were cancelled.</p>
+            <p className="mt-2 text-sm text-gray-600">Total flights booked across the network.</p>
           </div>
         </div>
 
