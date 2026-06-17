@@ -230,8 +230,9 @@ const BookingPage: React.FC = () => {
       <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-8">Provide traveler information and select seats</p>
 
       {error && (
-        <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-900 p-4 rounded-xl text-xs font-semibold mb-6 animate-fadeIn">
-          ⚠️ {error}
+        <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-900 p-4 rounded-xl text-xs font-semibold mb-6 animate-fadeIn flex items-center gap-2">
+          <svg className="w-4 h-4 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>
+          <span>{error}</span>
         </div>
       )}
 
@@ -512,8 +513,8 @@ const BookingPage: React.FC = () => {
             </div>
 
             {/* Aircraft nose */}
-            <div className="flex justify-center pt-4">
-              <div className="text-4xl select-none">✈️</div>
+            <div className="flex justify-center pt-4 text-slate-400">
+              <svg className="w-8 h-8 rotate-180" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
             </div>
 
             {/* Seat Map */}

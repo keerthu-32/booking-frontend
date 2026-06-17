@@ -105,10 +105,15 @@ const FlightDetailsPage: React.FC = () => {
           {/* Connection Line */}
           <div className="flex flex-col items-center justify-center">
             <div className="text-xs font-bold text-slate-400 mb-2">
-              {Math.floor(flight.duration / 60)}h {flight.duration % 60}m
+              {(() => {
+                const durationMins = Math.max(1, Math.round((new Date(flight.arrivalTime).getTime() - new Date(flight.departureTime).getTime()) / 60000));
+                return `${Math.floor(durationMins / 60)}h ${durationMins % 60}m`;
+              })()}
             </div>
             <div className="w-full border-t border-dashed border-slate-300 relative my-2 flex justify-center">
-              <span className="absolute -top-2 text-xs bg-white px-1 text-slate-400">✈️</span>
+              <span className="absolute -top-2 bg-white px-2 text-slate-400 flex items-center">
+                <svg className="w-3 h-3 text-slate-455" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+              </span>
             </div>
             <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mt-2 bg-slate-50 border border-slate-100 rounded px-2.5 py-0.5">
               {flight.stops === 0 ? 'Direct Flight' : `${flight.stops} Stop(s)`}
@@ -210,8 +215,9 @@ const FlightDetailsPage: React.FC = () => {
       )}
 
       {selectedCabin && selectedCabin.availableSeats === 0 && (
-        <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-950 p-4.5 rounded-xl text-xs font-bold shadow-sm">
-          ⚠️ Selected cabin class is not available. Please pick another class to proceed with your booking.
+        <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-950 p-4.5 rounded-xl text-xs font-bold shadow-sm flex items-center gap-2">
+          <svg className="w-4 h-4 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>
+          <span>Selected cabin class is not available. Please pick another class to proceed with your booking.</span>
         </div>
       )}
     </div>

@@ -149,8 +149,9 @@ const PaymentPage: React.FC = () => {
       <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-8">Authorize ticket pricing to finalize seats booking</p>
 
       {error && (
-        <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-900 p-4 rounded-xl text-xs font-semibold mb-6 animate-fadeIn">
-          ⚠️ {error}
+        <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-900 p-4 rounded-xl text-xs font-semibold mb-6 animate-fadeIn flex items-center gap-2">
+          <svg className="w-4 h-4 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>
+          <span>{error}</span>
         </div>
       )}
 
@@ -201,8 +202,9 @@ const PaymentPage: React.FC = () => {
                 : `Pay ${fareBreakdown ? `₹${fareBreakdown.totalAmount.toLocaleString('en-IN')}` : 'Now'}`}
             </button>
 
-            <p className="text-[10px] text-slate-400 text-center font-semibold uppercase tracking-wider mt-4">
-              🛡️ Secured by industry-standard 256-bit SSL encryption.
+            <p className="text-[10px] text-slate-400 text-center font-semibold uppercase tracking-wider mt-4 flex items-center justify-center gap-1.5">
+              <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>Secured by industry-standard 256-bit SSL encryption.</span>
             </p>
           </div>
         </div>

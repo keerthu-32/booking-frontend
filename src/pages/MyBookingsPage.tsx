@@ -144,14 +144,19 @@ Thank you for booking with FlightBook!
 
       {error && (
         <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-900 p-4 rounded-xl text-xs font-semibold mb-6 animate-fadeIn flex justify-between items-center">
-          <span>⚠️ {error}</span>
+          <span className="flex items-center gap-1.5">
+            <svg className="w-4 h-4 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>
+            {error}
+          </span>
           <button onClick={() => setError(null)} className="text-rose-500 hover:text-rose-700 font-extrabold text-sm ml-4">✕</button>
         </div>
       )}
 
       {filtered.length === 0 ? (
-        <div className="bg-white border border-slate-200/60 rounded-3xl shadow-xl p-16 text-center">
-          <div className="text-6xl mb-4">🎫</div>
+        <div className="bg-white border border-slate-200/60 rounded-3xl shadow-xl p-16 text-center flex flex-col items-center">
+          <div className="text-slate-350 mb-4">
+            <svg className="w-16 h-16" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v2zM13 5v2M13 17v2M13 11v2"/></svg>
+          </div>
           <h2 className="text-xl font-bold text-slate-800 mb-1">
             {filter === 'all' ? 'No Bookings Yet' : `No ${filter} Bookings`}
           </h2>
@@ -239,7 +244,7 @@ Thank you for booking with FlightBook!
                   <div className="flex flex-wrap gap-2">
                     {booking.passengers.map((p, i) => (
                       <span key={i} className="bg-slate-50 text-slate-700 border border-slate-100 rounded-xl px-3.5 py-1.5 text-xs font-semibold flex items-center gap-1.5">
-                        <span>👤</span>
+                        <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
                         <span>{p.firstName} {p.lastName}</span>
                         <span className="text-slate-300 font-normal">|</span>
                         <span className="text-indigo-600 font-bold text-[10px] bg-indigo-50 px-1 py-0.5 rounded">Seat {p.seatNumber}</span>
@@ -254,9 +259,10 @@ Thank you for booking with FlightBook!
                     <>
                       <button
                         onClick={() => handleDownloadItinerary(booking)}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-2.5 px-5 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-emerald-600/10 transition duration-150 flex items-center gap-1.5"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-2.5 px-5 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-emerald-600/10 transition duration-150 flex items-center gap-2"
                       >
-                        <span>⬇</span> Download Ticket Itinerary
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                        Download Ticket Itinerary
                       </button>
                       {booking.flightId && new Date(booking.flightId.departureTime) > new Date() && (
                         <button

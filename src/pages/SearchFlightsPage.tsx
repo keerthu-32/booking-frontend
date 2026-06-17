@@ -125,7 +125,9 @@ const SearchFlightsPage: React.FC = () => {
             <div className="relative">
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">From</label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none text-sm">🛫</span>
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none">
+                  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" style={{ transform: 'rotate(-15deg)' }}><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                </span>
                 <input
                   type="text"
                   placeholder="City or airport code"
@@ -159,7 +161,9 @@ const SearchFlightsPage: React.FC = () => {
             <div className="relative">
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">To</label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none text-sm">🛬</span>
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none">
+                  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" style={{ transform: 'rotate(15deg)' }}><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                </span>
                 <input
                   type="text"
                   placeholder="City or airport code"
@@ -262,8 +266,9 @@ const SearchFlightsPage: React.FC = () => {
 
       {/* Error alert */}
       {error && (
-        <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-900 p-4 rounded-xl text-xs font-semibold mb-6 animate-fadeIn">
-          ⚠️ {error}
+        <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-900 p-4 rounded-xl text-xs font-semibold mb-6 animate-fadeIn flex items-center gap-2">
+          <svg className="w-4 h-4 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>
+          <span>{error}</span>
         </div>
       )}
 
@@ -275,7 +280,9 @@ const SearchFlightsPage: React.FC = () => {
         </div>
       ) : flights.length === 0 ? (
         <div className="text-center py-20 bg-white border border-slate-200/60 rounded-3xl shadow-sm px-6">
-          <div className="text-5xl mb-4">✈️</div>
+          <div className="text-slate-350 mb-4 flex justify-center">
+            <svg className="w-16 h-16" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+          </div>
           <h3 className="text-slate-800 text-lg font-bold">No Flights Found</h3>
           <p className="text-slate-400 text-sm mt-1">Try adjusting your filters or date parameters.</p>
           <button
@@ -292,6 +299,7 @@ const SearchFlightsPage: React.FC = () => {
               ? flight.cabinClasses.reduce((min, c) => c.baseFare < min.baseFare ? c : min)
               : null;
             const isSoldOut = flight.cabinClasses.every((c) => c.availableSeats === 0);
+            const durationMins = Math.max(1, Math.round((new Date(flight.arrivalTime).getTime() - new Date(flight.departureTime).getTime()) / 60000));
             return (
               <div
                 key={flight._id}
@@ -320,9 +328,11 @@ const SearchFlightsPage: React.FC = () => {
 
                   {/* Flight connection indicators */}
                   <div className="flex flex-col items-center justify-center">
-                    <span className="text-xs font-bold text-slate-400">{Math.floor(flight.duration / 60)}h {flight.duration % 60}m</span>
+                    <span className="text-xs font-bold text-slate-400">{Math.floor(durationMins / 60)}h {durationMins % 60}m</span>
                     <div className="w-20 md:w-28 border-t border-dashed border-slate-300 my-1.5 relative flex justify-center">
-                      <span className="absolute -top-2 text-xs bg-white px-1 text-slate-400">✈️</span>
+                      <span className="absolute -top-2 bg-white px-2 text-slate-400 flex items-center">
+                        <svg className="w-3 h-3 text-slate-450" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                      </span>
                     </div>
                     <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
                       flight.stops === 0

@@ -89,6 +89,20 @@ const AdminPage: React.FC = () => {
 
   const isAdmin = user?.role === 'admin';
 
+  // Automatically calculate duration in minutes when departure/arrival slots change
+  useEffect(() => {
+    if (flightForm.departureTime && flightForm.arrivalTime) {
+      const dep = new Date(flightForm.departureTime);
+      const arr = new Date(flightForm.arrivalTime);
+      if (!isNaN(dep.getTime()) && !isNaN(arr.getTime())) {
+        const diffMins = Math.max(1, Math.round((arr.getTime() - dep.getTime()) / 60000));
+        if (diffMins !== flightForm.duration) {
+          setFlightForm(prev => ({ ...prev, duration: diffMins }));
+        }
+      }
+    }
+  }, [flightForm.departureTime, flightForm.arrivalTime]);
+
   const loadAdminData = async () => {
     if (!accessToken || !isAdmin) return;
     try {
@@ -301,7 +315,7 @@ const AdminPage: React.FC = () => {
         {error && (
           <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-900 p-4 rounded-xl shadow-sm shadow-rose-100 flex justify-between items-center mb-6 animate-fadeIn animate-duration-150">
             <div className="flex items-center gap-3">
-              <span className="text-rose-500 text-xl font-bold">⚠️</span>
+              <svg className="w-5 h-5 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>
               <span className="text-sm font-semibold">{error}</span>
             </div>
             <button onClick={() => setError(null)} className="text-rose-600 hover:text-rose-900 font-bold transition p-1">
@@ -321,8 +335,9 @@ const AdminPage: React.FC = () => {
             {/* Flight creation form */}
             <form onSubmit={handleSaveFlight} className="bg-white rounded-3xl shadow-xl shadow-slate-100/60 border border-slate-200/80 p-6 space-y-5">
               <div className="flex justify-between items-center pb-4 border-b border-slate-100">
-                <h2 className="font-extrabold text-lg text-slate-800">
-                  {editingFlightId ? '📝 Edit Flight Details' : '✈️ Add New Flight'}
+                <h2 className="font-extrabold text-lg text-slate-800 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                  <span>{editingFlightId ? 'Edit Flight Details' : 'Add New Flight'}</span>
                 </h2>
                 {editingFlightId && (
                   <button type="button" onClick={resetFlightForm} className="text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition">
@@ -569,7 +584,10 @@ const AdminPage: React.FC = () => {
           <div className="grid lg:grid-cols-[380px_1fr] gap-8 items-start animate-fadeIn">
             {/* User creation form */}
             <form onSubmit={handleCreateUser} className="bg-white rounded-3xl shadow-xl shadow-slate-100/60 border border-slate-200/80 p-6 space-y-4">
-              <h2 className="font-extrabold text-lg text-slate-800 pb-3 border-b border-slate-100">👤 Add New Accounts</h2>
+              <h2 className="font-extrabold text-lg text-slate-800 pb-3 border-b border-slate-100 flex items-center gap-2">
+                <svg className="w-5 h-5 text-indigo-650" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+                <span>Add New Accounts</span>
+              </h2>
               
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">

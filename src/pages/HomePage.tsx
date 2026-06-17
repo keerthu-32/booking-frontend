@@ -329,7 +329,9 @@ const HomePage: React.FC = () => {
                     From <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none text-sm">🛫</span>
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none">
+                      <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" style={{ transform: 'rotate(-15deg)' }}><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                    </span>
                     <input
                       id="origin"
                       type="text"
@@ -365,7 +367,7 @@ const HomePage: React.FC = () => {
                       ))}
                     </div>
                   )}
-                  {errors.origin && <p className="text-rose-500 text-xs font-semibold mt-1">⚠️ {errors.origin}</p>}
+                  {errors.origin && <p className="text-rose-500 text-xs font-semibold mt-1 flex items-center gap-1"><svg className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>{errors.origin}</p>}
                 </div>
 
                 {/* Destination with Autocomplete */}
@@ -374,7 +376,9 @@ const HomePage: React.FC = () => {
                     To <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none text-sm">🛬</span>
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none">
+                      <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" style={{ transform: 'rotate(15deg)' }}><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                    </span>
                     <input
                       id="destination"
                       type="text"
@@ -410,7 +414,7 @@ const HomePage: React.FC = () => {
                       ))}
                     </div>
                   )}
-                  {errors.destination && <p className="text-rose-500 text-xs font-semibold mt-1">⚠️ {errors.destination}</p>}
+                  {errors.destination && <p className="text-rose-500 text-xs font-semibold mt-1 flex items-center gap-1"><svg className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>{errors.destination}</p>}
                 </div>
               </div>
 
@@ -435,7 +439,7 @@ const HomePage: React.FC = () => {
                     }`}
                     required
                   />
-                  {errors.departureDate && <p className="text-rose-500 text-xs font-semibold mt-1">⚠️ {errors.departureDate}</p>}
+                  {errors.departureDate && <p className="text-rose-500 text-xs font-semibold mt-1 flex items-center gap-1"><svg className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>{errors.departureDate}</p>}
                 </div>
 
                 {/* Return Date (if round trip) */}
@@ -458,7 +462,7 @@ const HomePage: React.FC = () => {
                       }`}
                       required
                     />
-                    {errors.returnDate && <p className="text-rose-500 text-xs font-semibold mt-1">⚠️ {errors.returnDate}</p>}
+                    {errors.returnDate && <p className="text-rose-500 text-xs font-semibold mt-1 flex items-center gap-1"><svg className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>{errors.returnDate}</p>}
                   </div>
                 )}
 
@@ -550,17 +554,17 @@ const HomePage: React.FC = () => {
                                 type="button"
                                 onClick={() => applyPopularRoute(route)}
                                 title="Use in booking form"
-                                className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 transition"
+                                className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 transition flex items-center justify-center"
                               >
-                                📝
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                               </button>
                               <button
                                 type="button"
                                 onClick={() => searchPopularRoute(route)}
                                 title="Search directly"
-                                className="p-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm transition"
+                                className="p-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm transition flex items-center justify-center"
                               >
-                                🔍
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                               </button>
                             </div>
                           </td>
@@ -570,8 +574,10 @@ const HomePage: React.FC = () => {
                   </table>
                 </div>
               ) : (
-                <div className="text-center py-12 px-4 border border-dashed border-slate-200 rounded-2xl bg-slate-50/40">
-                  <div className="text-2xl mb-2">📊</div>
+                <div className="text-center py-12 px-4 border border-dashed border-slate-200 rounded-2xl bg-slate-50/40 flex flex-col items-center">
+                  <div className="text-slate-350 mb-2">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                  </div>
                   <p className="text-slate-500 font-semibold text-xs">No Route History Available</p>
                   <p className="text-slate-400 text-[10px] mt-0.5">Insights will compile after confirmed bookings occur.</p>
                 </div>

@@ -274,8 +274,10 @@ const AccountPage: React.FC = () => {
       </div>
 
       {bookings.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-lg p-16 text-center">
-          <div className="text-6xl mb-4">🎫</div>
+        <div className="bg-white rounded-lg shadow-lg p-16 text-center flex flex-col items-center">
+          <div className="text-slate-300 mb-4">
+            <svg className="w-16 h-16" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v2zM13 5v2M13 17v2M13 11v2"/></svg>
+          </div>
           <h2 className="text-xl font-bold text-gray-700 mb-2">No bookings yet</h2>
           <p className="text-gray-500 mb-6">Search and book a flight to see it here.</p>
           <button onClick={() => navigate('/search')} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition">
