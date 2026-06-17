@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -225,6 +225,7 @@ const SearchFlightsPage: React.FC = () => {
             const cheapest = flight.cabinClasses.length > 0
               ? flight.cabinClasses.reduce((min, c) => c.baseFare < min.baseFare ? c : min)
               : null;
+            const isSoldOut = flight.cabinClasses.every((c) => c.availableSeats === 0);
             return (
               <div key={flight._id}
                 className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition">
@@ -261,14 +262,26 @@ const SearchFlightsPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-blue-600">
-                      ₹{cheapest?.baseFare ?? 'N/A'}
-                    </div>
-                    <div className="text-xs text-gray-400 mb-2">per person</div>
-                    <button onClick={() => navigate(`/flight/${flight._id}`)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg text-sm transition">
-                      Select
-                    </button>
+                    {isSoldOut ? (
+                      <>
+                        <div className="text-lg font-bold text-gray-400">Sold Out</div>
+                        <button disabled
+                          className="mt-2 bg-gray-300 text-gray-500 font-bold py-2 px-6 rounded-lg text-sm cursor-not-allowed">
+                          Unavailable
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-2xl font-bold text-blue-600">
+                          ₹{cheapest?.baseFare.toLocaleString('en-IN') ?? 'N/A'}
+                        </div>
+                        <div className="text-xs text-gray-400 mb-2">per person</div>
+                        <button onClick={() => navigate(`/flight/${flight._id}`)}
+                          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg text-sm transition">
+                          Select
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

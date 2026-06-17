@@ -84,6 +84,8 @@ const AdminPage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [recurringDaysVal, setRecurringDaysVal] = useState(7);
 
   const isAdmin = user?.role === 'admin';
 
@@ -128,6 +130,8 @@ const AdminPage: React.FC = () => {
   const resetFlightForm = () => {
     setEditingFlightId(null);
     setFlightForm(emptyFlight);
+    setIsRecurring(false);
+    setRecurringDaysVal(7);
   };
 
   const handleEditFlight = (flight: FlightRow) => {
@@ -155,19 +159,23 @@ const AdminPage: React.FC = () => {
     try {
       setSaving(true);
       setError(null);
-      const payload = {
+      const payload: AdminFlightPayload = {
         ...flightForm,
         origin: { ...flightForm.origin, iataCode: flightForm.origin.iataCode.toUpperCase() },
         destination: { ...flightForm.destination, iataCode: flightForm.destination.iataCode.toUpperCase() },
         departureTime: new Date(flightForm.departureTime).toISOString(),
         arrivalTime: new Date(flightForm.arrivalTime).toISOString(),
       };
+      if (!editingFlightId && isRecurring) {
+        payload.recurringDays = recurringDaysVal;
+      }
+
       if (editingFlightId) {
         await apiService.updateFlight(accessToken, editingFlightId, payload);
         setMessage('Flight updated successfully');
       } else {
         await apiService.createFlight(accessToken, payload);
-        setMessage('Flight created successfully');
+        setMessage(isRecurring ? `Successfully created ${recurringDaysVal} daily flights` : 'Flight created successfully');
       }
       resetFlightForm();
       await loadAdminData();
@@ -314,6 +322,38 @@ const AdminPage: React.FC = () => {
               ))}
             </div>
             <input placeholder="Amenities, comma separated" value={flightForm.amenities.join(', ')} onChange={(e) => setFlightForm({ ...flightForm, amenities: e.target.value.split(',').map((x) => x.trim()).filter(Boolean) })} className="border rounded px-3 py-2 w-full" />
+            
+            {!editingFlightId && (
+              <div className="bg-gray-50 border border-gray-150 rounded-lg p-3 space-y-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="repeatFlight"
+                    checked={isRecurring}
+                    onChange={(e) => setIsRecurring(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
+                  />
+                  <label htmlFor="repeatFlight" className="text-sm font-semibold text-gray-700 cursor-pointer select-none">
+                    Repeat this flight daily
+                  </label>
+                </div>
+                {isRecurring && (
+                  <div className="flex items-center gap-2 pl-6 animate-fadeIn">
+                    <span className="text-xs text-gray-500">For:</span>
+                    <input
+                      type="number"
+                      min="2"
+                      max="30"
+                      value={recurringDaysVal}
+                      onChange={(e) => setRecurringDaysVal(Math.max(2, Math.min(30, Number(e.target.value))))}
+                      className="border rounded px-2 py-0.5 w-16 text-sm text-center focus:ring-1 focus:ring-blue-500"
+                    />
+                    <span className="text-xs text-gray-500 font-medium">continuous days</span>
+                  </div>
+                )}
+              </div>
+            )}
+
             <button disabled={saving} className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 rounded">
               {saving ? 'Saving...' : editingFlightId ? 'Update Flight' : 'Create Flight'}
             </button>

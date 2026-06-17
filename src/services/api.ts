@@ -115,6 +115,7 @@ export interface AdminFlightPayload {
     currency: string;
   }>;
   amenities: string[];
+  recurringDays?: number;
 }
 
 class ApiService {
