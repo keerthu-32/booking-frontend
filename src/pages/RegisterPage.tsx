@@ -87,21 +87,30 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-600 to-blue-800 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-center mb-8">Create Account</h1>
+    <div className="min-h-screen bg-slate-50/40 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      {/* Background glow elements */}
+      <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-indigo-300/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-300/15 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div className="max-w-md w-full bg-white border border-slate-200/80 rounded-3xl shadow-xl p-8 space-y-6 relative z-10">
+        <div className="text-center">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 bg-clip-text text-transparent">
+            Create Account
+          </h1>
+          <p className="text-xs text-slate-400 mt-1.5 font-bold uppercase tracking-wider">Join us for seamless travels</p>
+        </div>
 
         {serverError && (
-          <div className="bg-red-100 border border-red-400 text-red-700 p-4 rounded mb-6">
-            {serverError}
+          <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-900 p-4 rounded-xl text-xs font-semibold animate-fadeIn">
+            ⚠️ {serverError}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label htmlFor="firstName" className="block text-sm font-medium mb-1">
-                First Name <span className="text-red-500">*</span>
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label htmlFor="firstName" className="block text-xs font-bold text-slate-500 uppercase tracking-wide">
+                First Name <span className="text-rose-500">*</span>
               </label>
               <input
                 id="firstName"
@@ -110,15 +119,15 @@ const RegisterPage: React.FC = () => {
                 value={formData.firstName}
                 onChange={handleChange}
                 placeholder="John"
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                  errors.firstName ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-3.5 py-2.5 border rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all ${
+                  errors.firstName ? 'border-rose-400 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'
                 }`}
               />
-              {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>}
+              {errors.firstName && <p className="text-rose-500 text-xs font-medium mt-1">{errors.firstName}</p>}
             </div>
-            <div>
-              <label htmlFor="lastName" className="block text-sm font-medium mb-1">
-                Last Name <span className="text-red-500">*</span>
+            <div className="space-y-1">
+              <label htmlFor="lastName" className="block text-xs font-bold text-slate-500 uppercase tracking-wide">
+                Last Name <span className="text-rose-500">*</span>
               </label>
               <input
                 id="lastName"
@@ -127,17 +136,17 @@ const RegisterPage: React.FC = () => {
                 value={formData.lastName}
                 onChange={handleChange}
                 placeholder="Doe"
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                  errors.lastName ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-3.5 py-2.5 border rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all ${
+                  errors.lastName ? 'border-rose-400 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'
                 }`}
               />
-              {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>}
+              {errors.lastName && <p className="text-rose-500 text-xs font-medium mt-1">{errors.lastName}</p>}
             </div>
           </div>
 
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium mb-1">
-              Email <span className="text-red-500">*</span>
+          <div className="space-y-1">
+            <label htmlFor="email" className="block text-xs font-bold text-slate-500 uppercase tracking-wide">
+              Email Address <span className="text-rose-500">*</span>
             </label>
             <input
               id="email"
@@ -146,16 +155,16 @@ const RegisterPage: React.FC = () => {
               value={formData.email}
               onChange={handleChange}
               placeholder="you@example.com"
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-2.5 border rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all ${
+                errors.email ? 'border-rose-400 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'
               }`}
             />
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+            {errors.email && <p className="text-rose-500 text-xs font-medium mt-1">{errors.email}</p>}
           </div>
 
-          <div className="mb-4">
-            <label htmlFor="phone" className="block text-sm font-medium mb-1">
-              Phone <span className="text-red-500">*</span>
+          <div className="space-y-1">
+            <label htmlFor="phone" className="block text-xs font-bold text-slate-500 uppercase tracking-wide">
+              Phone Number <span className="text-rose-500">*</span>
             </label>
             <input
               id="phone"
@@ -164,16 +173,16 @@ const RegisterPage: React.FC = () => {
               value={formData.phone}
               onChange={handleChange}
               placeholder="+91 9876543210"
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                errors.phone ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-2.5 border rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all ${
+                errors.phone ? 'border-rose-400 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'
               }`}
             />
-            {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+            {errors.phone && <p className="text-rose-500 text-xs font-medium mt-1">{errors.phone}</p>}
           </div>
 
-          <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-medium mb-1">
-              Password <span className="text-red-500">*</span>
+          <div className="space-y-1">
+            <label htmlFor="password" className="block text-xs font-bold text-slate-500 uppercase tracking-wide">
+              Password <span className="text-rose-500">*</span>
             </label>
             <input
               id="password"
@@ -181,17 +190,17 @@ const RegisterPage: React.FC = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Min 8 chars, uppercase, lowercase, number"
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
+              placeholder="••••••••"
+              className={`w-full px-4 py-2.5 border rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all ${
+                errors.password ? 'border-rose-400 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'
               }`}
             />
-            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+            {errors.password && <p className="text-rose-500 text-xs font-medium mt-1">{errors.password}</p>}
           </div>
 
-          <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">
-              Confirm Password <span className="text-red-500">*</span>
+          <div className="space-y-1 mb-6">
+            <label htmlFor="confirmPassword" className="block text-xs font-bold text-slate-500 uppercase tracking-wide">
+              Confirm Password <span className="text-rose-500">*</span>
             </label>
             <input
               id="confirmPassword"
@@ -199,26 +208,26 @@ const RegisterPage: React.FC = () => {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              placeholder="Repeat your password"
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+              placeholder="••••••••"
+              className={`w-full px-4 py-2.5 border rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all ${
+                errors.confirmPassword ? 'border-rose-400 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'
               }`}
             />
-            {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
+            {errors.confirmPassword && <p className="text-rose-500 text-xs font-medium mt-1">{errors.confirmPassword}</p>}
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 rounded-lg transition"
+            className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-extrabold py-3 rounded-xl transition duration-150 shadow-md shadow-indigo-600/10 hover:shadow-lg disabled:opacity-50"
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 
-        <p className="mt-6 text-center text-gray-600">
+        <p className="text-center text-sm text-slate-500 pt-2 border-t border-slate-100">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:text-blue-800 font-semibold">
+          <Link to="/login" className="text-indigo-600 hover:text-indigo-800 font-extrabold transition">
             Login here
           </Link>
         </p>

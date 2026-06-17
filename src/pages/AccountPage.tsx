@@ -22,10 +22,12 @@ interface BookingItem {
   };
 }
 
+
+
 const statusColors: Record<string, string> = {
-  confirmed: 'bg-green-100 text-green-800',
-  pending: 'bg-yellow-100 text-yellow-800',
-  cancelled: 'bg-red-100 text-red-800',
+  confirmed: 'bg-green-100 text-green-800 border-green-200/50',
+  pending: 'bg-yellow-100 text-yellow-800 border-yellow-200/50',
+  cancelled: 'bg-red-100 text-red-800 border-red-200/50',
 };
 
 const AccountPage: React.FC = () => {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const LoginPage: React.FC = () => {
@@ -32,37 +32,46 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-600 to-blue-800 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-center mb-8">Login</h1>
+    <div className="min-h-screen bg-slate-50/40 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      {/* Background glow elements */}
+      <div className="absolute top-1/3 left-1/3 w-80 h-80 bg-indigo-300/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-1/3 right-1/3 w-96 h-96 bg-blue-300/15 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div className="max-w-md w-full bg-white border border-slate-200/80 rounded-3xl shadow-xl p-8 space-y-6 relative z-10">
+        <div className="text-center">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 bg-clip-text text-transparent">
+            Welcome Back
+          </h1>
+          <p className="text-xs text-slate-400 mt-1.5 font-bold uppercase tracking-wider">Log in to manage your journeys</p>
+        </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 p-4 rounded mb-6">
-            {error}
+          <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-900 p-4 rounded-xl text-xs font-semibold animate-fadeIn">
+            ⚠️ {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Email</label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-1">
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide">Email Address</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+              className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all focus:border-indigo-500 text-slate-800"
               required
             />
           </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Password</label>
+          <div className="space-y-1">
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Your password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+              placeholder="••••••••"
+              className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all focus:border-indigo-500 text-slate-800"
               required
             />
           </div>
@@ -70,17 +79,17 @@ const LoginPage: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 rounded-lg transition"
+            className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-extrabold py-3 rounded-xl transition duration-150 shadow-md shadow-indigo-600/10 hover:shadow-lg disabled:opacity-50 mt-2"
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
-        <p className="mt-6 text-center text-gray-600">
+        <p className="text-center text-sm text-slate-500 pt-2 border-t border-slate-100">
           Don't have an account?{' '}
-          <a href="/register" className="text-blue-600 hover:text-blue-800 font-semibold">
+          <Link to="/register" className="text-indigo-600 hover:text-indigo-800 font-extrabold transition">
             Register here
-          </a>
+          </Link>
         </p>
       </div>
     </div>

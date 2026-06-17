@@ -202,169 +202,224 @@ const HomePage: React.FC = () => {
   const formatCurrency = (value: number) => `₹${value.toFixed(0)}`;
   const featuredRoute = homepageInsights?.featuredRoute;
   const topRoutes = homepageInsights?.topRoutes || [];
-
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-slate-50/40">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-5xl font-bold mb-2">Find & Book Your Flight</h1>
-          <p className="text-xl opacity-90">Search millions of flights at the best prices</p>
+      <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-800 text-white pb-28 pt-16">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent)] pointer-events-none"></div>
+        <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-indigo-400/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute -bottom-10 right-1/4 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 relative z-10 text-center">
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-3">
+            Find & Book Your Next Journey
+          </h1>
+          <p className="text-base md:text-lg text-indigo-100/90 max-w-xl mx-auto font-medium">
+            Search, compare, and lock in the best routes in real-time.
+          </p>
         </div>
       </div>
 
-      {/* Insights + Search */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid gap-4 md:grid-cols-3 mb-8">
-          <div className="bg-white rounded-lg shadow-lg p-6 border border-blue-100">
-            <p className="text-sm text-gray-500">Most Popular Route</p>
-            <p className="mt-2 text-3xl font-bold text-blue-700">
-              {homepageInsightsLoading ? 'Loading...' : featuredRoute?.route || 'No bookings yet'}
-            </p>
-            <p className="mt-2 text-sm text-gray-600">
-              {featuredRoute
-                ? `${featuredRoute.count} bookings · ${formatCurrency(featuredRoute.revenue)} in revenue`
-                : 'This route will auto-fill in the booking form when data is available.'}
-            </p>
+      {/* Main Content Area */}
+      <div className="relative z-20 max-w-7xl mx-auto px-4 -mt-14 pb-16">
+        {/* Insights Metrics Grid */}
+        <div className="grid gap-5 md:grid-cols-3 mb-8">
+          {/* Card 1: Popular Route */}
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-slate-200/60 flex flex-col justify-between transition duration-200 hover:shadow-2xl">
+            <div>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Most Popular Route</p>
+              <h3 className="mt-2 text-2xl font-black text-slate-800 tracking-tight">
+                {homepageInsightsLoading ? (
+                  <span className="text-slate-400 font-medium text-lg">Loading route...</span>
+                ) : featuredRoute?.route || (
+                  <span className="text-slate-400 font-medium text-lg">No bookings yet</span>
+                )}
+              </h3>
+              <p className="mt-2 text-xs text-slate-500 font-medium leading-relaxed">
+                {featuredRoute
+                  ? `${featuredRoute.count} bookings · ${formatCurrency(featuredRoute.revenue)} in revenue`
+                  : 'This route will auto-fill in the booking form when data is available.'}
+              </p>
+            </div>
             {featuredRoute && (
               <button
                 type="button"
                 onClick={() => applyPopularRoute(featuredRoute)}
-                className="mt-4 inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 text-xs font-bold shadow-md shadow-indigo-600/15 hover:shadow-lg transition duration-150"
               >
-                Use in booking form
+                Use in form
               </button>
             )}
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6 border border-green-100">
-            <p className="text-sm text-gray-500">Average Booking Value</p>
-            <p className="mt-2 text-3xl font-bold text-green-700">
-              {homepageInsightsLoading ? 'Loading...' : formatCurrency(homepageInsights?.averageBookingValue || 0)}
-            </p>
-            <p className="mt-2 text-sm text-gray-600">Average confirmed booking amount across the network.</p>
+          {/* Card 2: Average Booking Value */}
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-slate-200/60 flex flex-col justify-between transition duration-200 hover:shadow-2xl">
+            <div>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Average Ticket Price</p>
+              <h3 className="mt-2 text-2xl font-black text-slate-800 tracking-tight">
+                {homepageInsightsLoading ? (
+                  <span className="text-slate-400 font-medium text-lg">Loading...</span>
+                ) : (
+                  formatCurrency(homepageInsights?.averageBookingValue || 0)
+                )}
+              </h3>
+              <p className="mt-2 text-xs text-slate-500 font-medium leading-relaxed">
+                Average confirmed booking amount across active routes.
+              </p>
+            </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6 border border-purple-100">
-            <p className="text-sm text-gray-500">Bookings Made</p>
-            <p className="mt-2 text-3xl font-bold text-purple-700">
-              {homepageInsightsLoading ? 'Loading...' : (homepageInsights?.totalBookings || 0).toLocaleString()}
-            </p>
-            <p className="mt-2 text-sm text-gray-600">Total flights booked across the network.</p>
+          {/* Card 3: Bookings Made */}
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-slate-200/60 flex flex-col justify-between transition duration-200 hover:shadow-2xl">
+            <div>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bookings Completed</p>
+              <h3 className="mt-2 text-2xl font-black text-slate-800 tracking-tight">
+                {homepageInsightsLoading ? (
+                  <span className="text-slate-400 font-medium text-lg">Loading...</span>
+                ) : (
+                  (homepageInsights?.totalBookings || 0).toLocaleString()
+                )}
+              </h3>
+              <p className="mt-2 text-xs text-slate-500 font-medium leading-relaxed">
+                Total flight seats booked across our entire global network.
+              </p>
+            </div>
           </div>
         </div>
 
+        {/* Search & Popular Routes details */}
         <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-          <div className="bg-white rounded-lg shadow-lg p-8">
+          {/* Booking Config Panel */}
+          <div className="bg-white rounded-3xl shadow-xl border border-slate-200/60 p-6 md:p-8">
+            <h2 className="text-xl font-bold text-slate-800 mb-1">Configure Your Trip</h2>
+            <p className="text-xs text-slate-400 mb-6 uppercase tracking-wider font-bold">Select destination and options</p>
+            
             <form onSubmit={handleSearch}>
               {/* Trip Type Selection */}
-              <div className="mb-6 flex gap-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    value="roundtrip"
-                    checked={tripType === 'roundtrip'}
-                    onChange={(e) => setTripType(e.target.value)}
-                    className="w-4 h-4"
-                  />
-                  <span className="font-medium">Round Trip</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    value="oneway"
-                    checked={tripType === 'oneway'}
-                    onChange={(e) => setTripType(e.target.value)}
-                    className="w-4 h-4"
-                  />
-                  <span className="font-medium">One Way</span>
-                </label>
+              <div className="mb-6 inline-flex p-1 bg-slate-100 rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => setTripType('roundtrip')}
+                  className={`px-4 py-2 text-xs font-extrabold rounded-lg transition-all ${
+                    tripType === 'roundtrip'
+                      ? 'bg-white text-indigo-600 shadow-sm'
+                      : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  Round Trip
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTripType('oneway')}
+                  className={`px-4 py-2 text-xs font-extrabold rounded-lg transition-all ${
+                    tripType === 'oneway'
+                      ? 'bg-white text-indigo-600 shadow-sm'
+                      : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  One Way
+                </button>
               </div>
 
-              {/* Search Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+              {/* Autocomplete Input Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                 {/* Origin with Autocomplete */}
                 <div className="relative">
-                  <label htmlFor="origin" className="block text-sm font-medium mb-2">
-                    From <span className="text-red-500">*</span>
+                  <label htmlFor="origin" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
+                    From <span className="text-rose-500">*</span>
                   </label>
-                  <input
-                    id="origin"
-                    type="text"
-                    placeholder="e.g., JFK or New York"
-                    value={origin}
-                    onChange={(e) => {
-                      setOrigin(e.target.value);
-                      setShowOriginDropdown(true);
-                      setErrors({...errors, origin: ''});
-                    }}
-                    onFocus={() => setShowOriginDropdown(true)}
-                    onBlur={() => setTimeout(() => setShowOriginDropdown(false), 200)}
-                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                      errors.origin ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    required
-                  />
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none text-sm">🛫</span>
+                    <input
+                      id="origin"
+                      type="text"
+                      placeholder="JFK or New York"
+                      value={origin}
+                      onChange={(e) => {
+                        setOrigin(e.target.value);
+                        setShowOriginDropdown(true);
+                        setErrors({...errors, origin: ''});
+                      }}
+                      onFocus={() => setShowOriginDropdown(true)}
+                      onBlur={() => setTimeout(() => setShowOriginDropdown(false), 200)}
+                      className={`w-full pl-9 pr-4 py-2.5 border rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all focus:border-indigo-500 text-slate-800 font-medium ${
+                        errors.origin ? 'border-rose-400 ring-rose-400/25 ring-1' : 'border-slate-200'
+                      }`}
+                      required
+                    />
+                  </div>
                   {showOriginDropdown && filteredOrigins.length > 0 && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                    <div className="absolute z-30 w-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl max-h-60 overflow-y-auto divide-y divide-slate-100">
                       {filteredOrigins.map((airport) => (
                         <div
                           key={airport.iataCode}
                           onMouseDown={() => selectOrigin(airport)}
-                          className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
+                          className="px-4 py-3 hover:bg-indigo-50/40 cursor-pointer flex items-center justify-between transition"
                         >
-                          <div className="font-semibold">{airport.iataCode}</div>
-                          <div className="text-sm text-gray-600">{airport.city}, {airport.country}</div>
+                          <div>
+                            <span className="font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded text-xs mr-2">{airport.iataCode}</span>
+                            <span className="text-sm font-semibold text-slate-700">{airport.city}</span>
+                          </div>
+                          <span className="text-xs text-slate-400 font-semibold">{airport.country}</span>
                         </div>
                       ))}
                     </div>
                   )}
-                  {errors.origin && <p className="text-red-500 text-xs mt-1">{errors.origin}</p>}
+                  {errors.origin && <p className="text-rose-500 text-xs font-semibold mt-1">⚠️ {errors.origin}</p>}
                 </div>
 
                 {/* Destination with Autocomplete */}
                 <div className="relative">
-                  <label htmlFor="destination" className="block text-sm font-medium mb-2">
-                    To <span className="text-red-500">*</span>
+                  <label htmlFor="destination" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
+                    To <span className="text-rose-500">*</span>
                   </label>
-                  <input
-                    id="destination"
-                    type="text"
-                    placeholder="e.g., LAX or Los Angeles"
-                    value={destination}
-                    onChange={(e) => {
-                      setDestination(e.target.value);
-                      setShowDestDropdown(true);
-                      setErrors({...errors, destination: ''});
-                    }}
-                    onFocus={() => setShowDestDropdown(true)}
-                    onBlur={() => setTimeout(() => setShowDestDropdown(false), 200)}
-                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                      errors.destination ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    required
-                  />
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none text-sm">🛬</span>
+                    <input
+                      id="destination"
+                      type="text"
+                      placeholder="LAX or Los Angeles"
+                      value={destination}
+                      onChange={(e) => {
+                        setDestination(e.target.value);
+                        setShowDestDropdown(true);
+                        setErrors({...errors, destination: ''});
+                      }}
+                      onFocus={() => setShowDestDropdown(true)}
+                      onBlur={() => setTimeout(() => setShowDestDropdown(false), 200)}
+                      className={`w-full pl-9 pr-4 py-2.5 border rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all focus:border-indigo-500 text-slate-800 font-medium ${
+                        errors.destination ? 'border-rose-400 ring-rose-400/25 ring-1' : 'border-slate-200'
+                      }`}
+                      required
+                    />
+                  </div>
                   {showDestDropdown && filteredDestinations.length > 0 && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                    <div className="absolute z-30 w-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl max-h-60 overflow-y-auto divide-y divide-slate-100">
                       {filteredDestinations.map((airport) => (
                         <div
                           key={airport.iataCode}
                           onMouseDown={() => selectDestination(airport)}
-                          className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
+                          className="px-4 py-3 hover:bg-indigo-50/40 cursor-pointer flex items-center justify-between transition"
                         >
-                          <div className="font-semibold">{airport.iataCode}</div>
-                          <div className="text-sm text-gray-600">{airport.city}, {airport.country}</div>
+                          <div>
+                            <span className="font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded text-xs mr-2">{airport.iataCode}</span>
+                            <span className="text-sm font-semibold text-slate-700">{airport.city}</span>
+                          </div>
+                          <span className="text-xs text-slate-400 font-semibold">{airport.country}</span>
                         </div>
                       ))}
                     </div>
                   )}
-                  {errors.destination && <p className="text-red-500 text-xs mt-1">{errors.destination}</p>}
+                  {errors.destination && <p className="text-rose-500 text-xs font-semibold mt-1">⚠️ {errors.destination}</p>}
                 </div>
+              </div>
 
+              {/* Date & Passenger Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
                 {/* Departure Date */}
                 <div>
-                  <label htmlFor="departureDate" className="block text-sm font-medium mb-2">
-                    Departure Date <span className="text-red-500">*</span>
+                  <label htmlFor="departureDate" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
+                    Departure Date <span className="text-rose-500">*</span>
                   </label>
                   <input
                     id="departureDate"
@@ -375,19 +430,19 @@ const HomePage: React.FC = () => {
                       setDepartureDate(e.target.value);
                       setErrors({...errors, departureDate: ''});
                     }}
-                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                      errors.departureDate ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all focus:border-indigo-500 text-slate-800 font-medium ${
+                      errors.departureDate ? 'border-rose-400 ring-rose-400/25 ring-1' : ''
                     }`}
                     required
                   />
-                  {errors.departureDate && <p className="text-red-500 text-xs mt-1">{errors.departureDate}</p>}
+                  {errors.departureDate && <p className="text-rose-500 text-xs font-semibold mt-1">⚠️ {errors.departureDate}</p>}
                 </div>
 
                 {/* Return Date (if round trip) */}
                 {tripType === 'roundtrip' && (
                   <div>
-                    <label htmlFor="returnDate" className="block text-sm font-medium mb-2">
-                      Return Date <span className="text-red-500">*</span>
+                    <label htmlFor="returnDate" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
+                      Return Date <span className="text-rose-500">*</span>
                     </label>
                     <input
                       id="returnDate"
@@ -398,25 +453,25 @@ const HomePage: React.FC = () => {
                         setReturnDate(e.target.value);
                         setErrors({...errors, returnDate: ''});
                       }}
-                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                        errors.returnDate ? 'border-red-500' : 'border-gray-300'
+                      className={`w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all focus:border-indigo-500 text-slate-800 font-medium ${
+                        errors.returnDate ? 'border-rose-400 ring-rose-400/25 ring-1' : ''
                       }`}
                       required
                     />
-                    {errors.returnDate && <p className="text-red-500 text-xs mt-1">{errors.returnDate}</p>}
+                    {errors.returnDate && <p className="text-rose-500 text-xs font-semibold mt-1">⚠️ {errors.returnDate}</p>}
                   </div>
                 )}
 
                 {/* Passengers */}
                 <div>
-                  <label htmlFor="passengers" className="block text-sm font-medium mb-2">
-                    Passengers <span className="text-red-500">*</span>
+                  <label htmlFor="passengers" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
+                    Passengers <span className="text-rose-500">*</span>
                   </label>
                   <select
                     id="passengers"
                     value={passengers}
                     onChange={(e) => setPassengers(Number(e.target.value))}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                    className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all focus:border-indigo-500 text-slate-800 font-bold"
                   >
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                       <option key={num} value={num}>
@@ -430,60 +485,101 @@ const HomePage: React.FC = () => {
               {/* Search Button */}
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition"
+                className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-extrabold py-3.5 rounded-xl transition duration-150 shadow-md shadow-indigo-600/10 hover:shadow-lg"
               >
                 Search Flights
               </button>
             </form>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-lg font-bold">Popular Routes</h2>
-                <p className="text-sm text-gray-500">The routes travelers book most often.</p>
+          {/* Popular Routes Panel */}
+          <div className="bg-white rounded-3xl shadow-xl border border-slate-200/60 p-6 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-800">Popular Routes</h2>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">The routes booked most often</p>
+                </div>
+                {homepageInsightsError && (
+                  <span className="text-[10px] font-bold text-rose-500 bg-rose-50 border border-rose-100 rounded-full px-2 py-0.5">
+                    Insights Offline
+                  </span>
+                )}
               </div>
-              {homepageInsightsError && <span className="text-xs text-red-500">Insights unavailable</span>}
-            </div>
 
-            {homepageInsightsLoading ? (
-              <div className="text-sm text-gray-500">Loading route insights...</div>
-            ) : topRoutes.length > 0 ? (
-              <div className="space-y-3">
-                {topRoutes.map((route, index) => (
-                  <div key={`${route.origin}-${route.destination}-${index}`} className={`rounded-lg border p-4 ${index === 0 ? 'border-blue-200 bg-blue-50' : 'border-gray-100 bg-gray-50'}`}>
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="font-semibold text-gray-900">{route.route}</p>
-                        <p className="text-xs text-gray-500 mt-1">{route.count} bookings · {formatCurrency(route.revenue)} revenue</p>
-                      </div>
-                      {index === 0 && <span className="rounded-full bg-blue-600 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-white">Top</span>}
-                    </div>
-                    <div className="mt-3 flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => applyPopularRoute(route)}
-                        className="rounded-md bg-white px-3 py-2 text-xs font-semibold text-blue-700 ring-1 ring-blue-200 hover:bg-blue-50"
-                      >
-                        Use in form
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => searchPopularRoute(route)}
-                        className="rounded-md bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700"
-                      >
-                        Search this route
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-sm text-gray-500">No route history yet. New insights will appear after bookings are made.</div>
-            )}
+              {homepageInsightsLoading ? (
+                <div className="text-center py-12">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-indigo-600 border-t-transparent mb-2"></div>
+                  <p className="text-xs text-slate-400 font-bold tracking-wide">Retrieving Insights...</p>
+                </div>
+              ) : topRoutes.length > 0 ? (
+                <div className="overflow-x-auto rounded-2xl border border-slate-100 bg-slate-50/20">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider">
+                        <th className="px-4 py-3">Route</th>
+                        <th className="px-4 py-3 text-right">Volume</th>
+                        <th className="px-4 py-3 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                      {topRoutes.map((route, index) => (
+                        <tr
+                          key={`${route.origin}-${route.destination}-${index}`}
+                          className="hover:bg-slate-50/50 transition duration-150 group"
+                        >
+                          <td className="px-4 py-4">
+                            <div className="flex items-center gap-2">
+                              <span className="font-extrabold text-slate-800 text-sm tracking-tight">{route.route}</span>
+                              {index === 0 && (
+                                <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[9px] font-bold uppercase tracking-wide text-emerald-600 px-1.5 py-0.5">
+                                  Top
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[10px] text-slate-400 mt-0.5 font-bold tracking-wider uppercase">
+                              Est. Rev: {formatCurrency(route.revenue)}
+                            </div>
+                          </td>
+                          <td className="px-4 py-4 text-right font-bold text-slate-900">
+                            {route.count} bookings
+                          </td>
+                          <td className="px-4 py-4">
+                            <div className="flex gap-2 justify-end opacity-90 group-hover:opacity-100">
+                              <button
+                                type="button"
+                                onClick={() => applyPopularRoute(route)}
+                                title="Use in booking form"
+                                className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 transition"
+                              >
+                                📝
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => searchPopularRoute(route)}
+                                title="Search directly"
+                                className="p-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm transition"
+                              >
+                                🔍
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center py-12 px-4 border border-dashed border-slate-200 rounded-2xl bg-slate-50/40">
+                  <div className="text-2xl mb-2">📊</div>
+                  <p className="text-slate-500 font-semibold text-xs">No Route History Available</p>
+                  <p className="text-slate-400 text-[10px] mt-0.5">Insights will compile after confirmed bookings occur.</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        </div>
+      </div>
     </div>
   );
 };

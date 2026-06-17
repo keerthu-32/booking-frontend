@@ -22,12 +22,6 @@ interface Booking {
   createdAt: string;
 }
 
-const statusColors: Record<string, string> = {
-  confirmed: 'bg-green-100 text-green-800',
-  pending: 'bg-yellow-100 text-yellow-800',
-  cancelled: 'bg-red-100 text-red-800',
-};
-
 const MyBookingsPage: React.FC = () => {
   const { accessToken } = useAuth();
   const navigate = useNavigate();
@@ -125,14 +119,23 @@ Thank you for booking with FlightBook!
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">My Bookings</h1>
-        <div className="flex gap-2">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-black text-slate-800 tracking-tight">My Bookings</h1>
+          <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mt-0.5">Manage and track your flight tickets</p>
+        </div>
+        <div className="flex flex-wrap gap-1.5 p-1 bg-slate-100 rounded-xl self-start sm:self-auto">
           {['all', 'confirmed', 'pending', 'cancelled'].map(s => (
-            <button key={s} onClick={() => setFilter(s)}
-              className={`px-3 py-1 rounded-full text-sm font-medium capitalize transition ${
-                filter === s ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}>
+            <button
+              key={s}
+              onClick={() => setFilter(s)}
+              className={`px-4 py-2 text-xs font-extrabold rounded-lg transition-all capitalize ${
+                filter === s
+                  ? 'bg-white text-indigo-600 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
               {s}
             </button>
           ))}
@@ -140,107 +143,127 @@ Thank you for booking with FlightBook!
       </div>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 p-4 rounded mb-6">
-          {error}
-          <button onClick={() => setError(null)} className="ml-4 text-red-500 hover:text-red-700">✕</button>
+        <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-900 p-4 rounded-xl text-xs font-semibold mb-6 animate-fadeIn flex justify-between items-center">
+          <span>⚠️ {error}</span>
+          <button onClick={() => setError(null)} className="text-rose-500 hover:text-rose-700 font-extrabold text-sm ml-4">✕</button>
         </div>
       )}
 
       {filtered.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-lg p-16 text-center">
+        <div className="bg-white border border-slate-200/60 rounded-3xl shadow-xl p-16 text-center">
           <div className="text-6xl mb-4">🎫</div>
-          <h2 className="text-xl font-bold text-gray-700 mb-2">
-            {filter === 'all' ? 'No bookings yet' : `No ${filter} bookings`}
+          <h2 className="text-xl font-bold text-slate-800 mb-1">
+            {filter === 'all' ? 'No Bookings Yet' : `No ${filter} Bookings`}
           </h2>
-          <p className="text-gray-500 mb-6">
+          <p className="text-slate-400 text-sm mb-6">
             {filter === 'all'
               ? "You haven't made any bookings yet. Start by searching for flights."
-              : `You don't have any ${filter} bookings.`}
+              : `You don't have any bookings with status ${filter}.`}
           </p>
-          <button onClick={() => navigate('/search')}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition">
+          <button
+            onClick={() => navigate('/search')}
+            className="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-extrabold py-3 px-6 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-indigo-600/10 transition duration-150"
+          >
             Search Flights
           </button>
         </div>
       ) : (
         <div className="space-y-6">
           {filtered.map((booking) => (
-            <div key={booking._id} className="bg-white rounded-lg shadow-lg overflow-hidden">
-              {/* Header */}
-              <div className="bg-gray-50 px-6 py-4 flex justify-between items-center border-b">
-                <div className="flex items-center gap-4">
+            <div key={booking._id} className="bg-white rounded-3xl border border-slate-200/60 shadow-md hover:shadow-lg transition duration-200 overflow-hidden">
+              {/* Header Info Banner */}
+              <div className="bg-slate-50/60 px-6 py-4.5 flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100">
+                <div className="flex flex-wrap items-center gap-4">
                   <div>
-                    <span className="text-xs text-gray-500">Booking Ref</span>
-                    <p className="font-bold font-mono text-blue-600">{booking.bookingReference}</p>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Booking Ref</span>
+                    <p className="font-bold font-mono text-indigo-600 text-sm">{booking.bookingReference}</p>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${statusColors[booking.status] || 'bg-gray-100 text-gray-600'}`}>
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
+                    booking.status === 'confirmed'
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200/50'
+                      : booking.status === 'pending'
+                      ? 'bg-amber-50 text-amber-700 border-amber-200/50'
+                      : 'bg-rose-50 text-rose-700 border-rose-200/50'
+                  }`}>
                     {booking.status}
                   </span>
                 </div>
-                <span className="text-xs text-gray-400">
-                  Booked {new Date(booking.createdAt).toLocaleDateString()}
+                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                  Booked on {new Date(booking.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                 </span>
               </div>
 
+              {/* Main Booking Details */}
               <div className="p-6">
-                {/* Flight Info */}
+                {/* Flight Info Grid */}
                 {booking.flightId && (
-                  <div className="grid md:grid-cols-4 gap-6 mb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 pb-6 border-b border-slate-100">
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Flight</p>
-                      <p className="font-bold">{booking.flightId.flightNumber}</p>
-                      <p className="text-sm text-gray-500">{booking.flightId.airline}</p>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Carrier</p>
+                      <p className="font-extrabold text-slate-800">{booking.flightId.flightNumber}</p>
+                      <p className="text-xs font-semibold text-slate-500">{booking.flightId.airline}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Departure</p>
-                      <p className="font-bold">{booking.flightId.origin?.iataCode}</p>
-                      <p className="text-sm text-gray-500">{booking.flightId.origin?.city}</p>
-                      <p className="text-xs text-gray-400">
-                        {new Date(booking.flightId.departureTime).toLocaleString()}
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Departure</p>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded text-xs">{booking.flightId.origin?.iataCode}</span>
+                        <span className="text-xs font-semibold text-slate-600">{booking.flightId.origin?.city}</span>
+                      </div>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">
+                        {new Date(booking.flightId.departureTime).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Arrival</p>
-                      <p className="font-bold">{booking.flightId.destination?.iataCode}</p>
-                      <p className="text-sm text-gray-500">{booking.flightId.destination?.city}</p>
-                      <p className="text-xs text-gray-400">
-                        {new Date(booking.flightId.arrivalTime).toLocaleString()}
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Arrival</p>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded text-xs">{booking.flightId.destination?.iataCode}</span>
+                        <span className="text-xs font-semibold text-slate-600">{booking.flightId.destination?.city}</span>
+                      </div>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">
+                        {new Date(booking.flightId.arrivalTime).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Total Amount</p>
-                      <p className="font-bold text-xl text-blue-600">
-                        ₹{booking.fareBreakdown.totalAmount.toFixed(2)}
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Fare Amount</p>
+                      <p className="font-black text-xl text-slate-850">
+                        ₹{booking.fareBreakdown.totalAmount.toLocaleString('en-IN')}
                       </p>
-                      <p className="text-xs text-gray-400 capitalize">{booking.cabinClass} class</p>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5 capitalize">{booking.cabinClass} Class</p>
                     </div>
                   </div>
                 )}
 
-                {/* Passengers */}
-                <div className="mb-4">
-                  <p className="text-xs text-gray-500 mb-2">Passengers ({booking.passengers.length})</p>
+                {/* Passenger list */}
+                <div className="mb-6">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2.5">Travelers ({booking.passengers.length})</p>
                   <div className="flex flex-wrap gap-2">
                     {booking.passengers.map((p, i) => (
-                      <span key={i} className="bg-gray-100 px-3 py-1 rounded text-sm">
-                        {p.firstName} {p.lastName} · Seat {p.seatNumber}
+                      <span key={i} className="bg-slate-50 text-slate-700 border border-slate-100 rounded-xl px-3.5 py-1.5 text-xs font-semibold flex items-center gap-1.5">
+                        <span>👤</span>
+                        <span>{p.firstName} {p.lastName}</span>
+                        <span className="text-slate-300 font-normal">|</span>
+                        <span className="text-indigo-600 font-bold text-[10px] bg-indigo-50 px-1 py-0.5 rounded">Seat {p.seatNumber}</span>
                       </span>
                     ))}
                   </div>
                 </div>
 
-                {/* Actions */}
+                {/* Action Controls */}
                 <div className="flex gap-3 flex-wrap">
                   {booking.status === 'confirmed' && (
                     <>
-                      <button onClick={() => handleDownloadItinerary(booking)}
-                        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm transition">
-                        ⬇ Download Itinerary
+                      <button
+                        onClick={() => handleDownloadItinerary(booking)}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-2.5 px-5 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-emerald-600/10 transition duration-150 flex items-center gap-1.5"
+                      >
+                        <span>⬇</span> Download Ticket Itinerary
                       </button>
                       {booking.flightId && new Date(booking.flightId.departureTime) > new Date() && (
-                        <button onClick={() => handleCancel(booking._id)}
+                        <button
+                          onClick={() => handleCancel(booking._id)}
                           disabled={cancellingId === booking._id}
-                          className="bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded-lg text-sm transition">
+                          className="border border-rose-200 text-rose-600 hover:bg-rose-50 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 font-bold py-2.5 px-5 rounded-xl text-xs uppercase tracking-wider transition duration-150"
+                        >
                           {cancellingId === booking._id ? 'Cancelling...' : 'Cancel Booking'}
                         </button>
                       )}
@@ -251,8 +274,9 @@ Thank you for booking with FlightBook!
                       onClick={() => navigate(`/payment/${booking._id}`, {
                         state: { bookingReference: booking.bookingReference, fareBreakdown: booking.fareBreakdown }
                       })}
-                      className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg text-sm transition">
-                      Complete Payment
+                      className="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-extrabold py-2.5 px-5 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-indigo-600/15 transition duration-150"
+                    >
+                      Complete Payment Now
                     </button>
                   )}
                 </div>

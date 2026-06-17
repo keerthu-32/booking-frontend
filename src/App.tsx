@@ -1,5 +1,4 @@
-// HashRouter avoids server-side 404s on direct navigation to nested routes.
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import HomePage from './pages/HomePage';
 import SearchFlightsPage from './pages/SearchFlightsPage';
@@ -16,7 +15,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
 function App() {
-
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
