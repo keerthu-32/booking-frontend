@@ -1,3 +1,76 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  ::selection {
+    @apply bg-brand-orange/20 text-brand-navy;
+  }
+
+  /* Custom input styling for premium visual feel */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    @apply opacity-60 cursor-pointer hover:opacity-100 transition;
+    filter: invert(16%) sepia(85%) saturate(3025%) hue-rotate(213deg) brightness(89%) contrast(92%); /* Matches navy */
+  }
+
+  /* Elegant smooth scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-300/60 rounded-full hover:bg-slate-400/80 transition;
+  }
+}
+
+/* Animations for premium transitions */
+@keyframes plane-sweep {
+  0% {
+    transform: translate(-10%, 10%) rotate(-5deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.6;
+  }
+  85% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(110%, -110%) rotate(-5deg);
+    opacity: 0;
+  }
+}
+
+.animate-plane-sweep {
+  animation: plane-sweep 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes gradient-pulse {
+  0%, 100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.animate-gradient-pulse {
+  animation: gradient-pulse 6s ease-in-out infinite;
+}
+
+/* 3D Card Flip Perspective & Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}

@@ -251,7 +251,7 @@ const AdminPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-slate-50/50 flex flex-col justify-center items-center py-12 px-4">
         <div className="max-w-md w-full bg-white border border-slate-200 rounded-3xl shadow-2xl p-8 text-center space-y-6">
-          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-2xl bg-indigo-50 text-indigo-600 text-2xl">
+          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-2xl bg-blue-50 text-blue-900 text-2xl">
             🔒
           </div>
           <div className="space-y-2">
@@ -260,7 +260,7 @@ const AdminPage: React.FC = () => {
           </div>
           <button 
             onClick={() => navigate('/login')} 
-            className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold py-3 px-6 rounded-xl transition duration-150 shadow-md shadow-indigo-600/10"
+            className="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-xl transition duration-150 shadow-md shadow-blue-900/10"
           >
             Go to Login
           </button>
@@ -275,7 +275,7 @@ const AdminPage: React.FC = () => {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pb-6 mb-8 border-b border-slate-200/80">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 bg-clip-text text-transparent">
               Admin Control Console
             </h1>
             <p className="text-sm text-slate-500 mt-1 font-medium">
@@ -290,7 +290,7 @@ const AdminPage: React.FC = () => {
                 onClick={() => setTab(item)}
                 className={`px-5 py-2.5 rounded-xl text-sm font-bold capitalize transition-all duration-150 ${
                   tab === item 
-                    ? 'bg-white text-indigo-700 shadow-md shadow-slate-200 border border-slate-200/40' 
+                    ? 'bg-white text-blue-900 shadow-md shadow-slate-200 border border-slate-200/40' 
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/40'
                 }`}
               >
@@ -336,11 +336,11 @@ const AdminPage: React.FC = () => {
             <form onSubmit={handleSaveFlight} className="bg-white rounded-3xl shadow-xl shadow-slate-100/60 border border-slate-200/80 p-6 space-y-5">
               <div className="flex justify-between items-center pb-4 border-b border-slate-100">
                 <h2 className="font-extrabold text-lg text-slate-800 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                  <svg className="w-5 h-5 text-blue-900" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
                   <span>{editingFlightId ? 'Edit Flight Details' : 'Add New Flight'}</span>
                 </h2>
                 {editingFlightId && (
-                  <button type="button" onClick={resetFlightForm} className="text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition">
+                  <button type="button" onClick={resetFlightForm} className="text-xs font-bold text-blue-900 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition">
                     New Flight
                   </button>
                 )}
@@ -349,61 +349,61 @@ const AdminPage: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Flight Number</label>
-                  <input required placeholder="AI101" value={flightForm.flightNumber} onChange={(e) => setFlightForm({ ...flightForm, flightNumber: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                  <input required placeholder="AI101" value={flightForm.flightNumber} onChange={(e) => setFlightForm({ ...flightForm, flightNumber: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Airline Partner</label>
-                  <input required placeholder="Air India" value={flightForm.airline} onChange={(e) => setFlightForm({ ...flightForm, airline: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                  <input required placeholder="Air India" value={flightForm.airline} onChange={(e) => setFlightForm({ ...flightForm, airline: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Origin Code</label>
-                  <input required placeholder="DEL" value={flightForm.origin.iataCode} onChange={(e) => setFlightForm({ ...flightForm, origin: { ...flightForm.origin, iataCode: e.target.value } })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all uppercase" />
+                  <input required placeholder="DEL" value={flightForm.origin.iataCode} onChange={(e) => setFlightForm({ ...flightForm, origin: { ...flightForm.origin, iataCode: e.target.value } })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all uppercase" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Destination Code</label>
-                  <input required placeholder="BOM" value={flightForm.destination.iataCode} onChange={(e) => setFlightForm({ ...flightForm, destination: { ...flightForm.destination, iataCode: e.target.value } })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all uppercase" />
+                  <input required placeholder="BOM" value={flightForm.destination.iataCode} onChange={(e) => setFlightForm({ ...flightForm, destination: { ...flightForm.destination, iataCode: e.target.value } })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all uppercase" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Origin City</label>
-                  <input required placeholder="New Delhi" value={flightForm.origin.city} onChange={(e) => setFlightForm({ ...flightForm, origin: { ...flightForm.origin, city: e.target.value } })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                  <input required placeholder="New Delhi" value={flightForm.origin.city} onChange={(e) => setFlightForm({ ...flightForm, origin: { ...flightForm.origin, city: e.target.value } })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Destination City</label>
-                  <input required placeholder="Mumbai" value={flightForm.destination.city} onChange={(e) => setFlightForm({ ...flightForm, destination: { ...flightForm.destination, city: e.target.value } })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                  <input required placeholder="Mumbai" value={flightForm.destination.city} onChange={(e) => setFlightForm({ ...flightForm, destination: { ...flightForm.destination, city: e.target.value } })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Origin Country</label>
-                  <input required placeholder="India" value={flightForm.origin.country} onChange={(e) => setFlightForm({ ...flightForm, origin: { ...flightForm.origin, country: e.target.value } })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                  <input required placeholder="India" value={flightForm.origin.country} onChange={(e) => setFlightForm({ ...flightForm, origin: { ...flightForm.origin, country: e.target.value } })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Dest Country</label>
-                  <input required placeholder="India" value={flightForm.destination.country} onChange={(e) => setFlightForm({ ...flightForm, destination: { ...flightForm.destination, country: e.target.value } })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                  <input required placeholder="India" value={flightForm.destination.country} onChange={(e) => setFlightForm({ ...flightForm, destination: { ...flightForm.destination, country: e.target.value } })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Departure Slot</label>
-                  <input required type="datetime-local" value={flightForm.departureTime} onChange={(e) => setFlightForm({ ...flightForm, departureTime: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-slate-700" />
+                  <input required type="datetime-local" value={flightForm.departureTime} onChange={(e) => setFlightForm({ ...flightForm, departureTime: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all text-slate-700" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Arrival Slot</label>
-                  <input required type="datetime-local" value={flightForm.arrivalTime} onChange={(e) => setFlightForm({ ...flightForm, arrivalTime: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-slate-700" />
+                  <input required type="datetime-local" value={flightForm.arrivalTime} onChange={(e) => setFlightForm({ ...flightForm, arrivalTime: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all text-slate-700" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Aircraft Model</label>
-                  <input required placeholder="Boeing 787" value={flightForm.aircraft} onChange={(e) => setFlightForm({ ...flightForm, aircraft: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                  <input required placeholder="Boeing 787" value={flightForm.aircraft} onChange={(e) => setFlightForm({ ...flightForm, aircraft: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Status</label>
-                  <select value={flightForm.status} onChange={(e) => setFlightForm({ ...flightForm, status: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-slate-700 capitalize">
+                  <select value={flightForm.status} onChange={(e) => setFlightForm({ ...flightForm, status: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all text-slate-700 capitalize">
                     {['scheduled', 'delayed', 'boarding', 'departed', 'arrived', 'cancelled'].map((s) => <option key={s}>{s}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Duration (Mins)</label>
-                  <input required type="number" min="1" placeholder="120" value={flightForm.duration} onChange={(e) => setFlightForm({ ...flightForm, duration: Number(e.target.value) })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                  <input required type="number" min="1" placeholder="120" value={flightForm.duration} onChange={(e) => setFlightForm({ ...flightForm, duration: Number(e.target.value) })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Layover Stops</label>
-                  <input required type="number" min="0" placeholder="0" value={flightForm.stops} onChange={(e) => setFlightForm({ ...flightForm, stops: Number(e.target.value) })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                  <input required type="number" min="0" placeholder="0" value={flightForm.stops} onChange={(e) => setFlightForm({ ...flightForm, stops: Number(e.target.value) })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
                 </div>
               </div>
 
@@ -423,9 +423,9 @@ const AdminPage: React.FC = () => {
                   {flightForm.cabinClasses.map((cabin, index) => (
                     <div key={cabin.type} className="grid grid-cols-4 gap-2 items-center text-sm font-semibold text-slate-700">
                       <span className="capitalize">{cabin.type}</span>
-                      <input type="number" min="0" value={cabin.totalSeats} onChange={(e) => updateCabin(index, 'totalSeats', e.target.value)} className="border border-slate-200 rounded-lg px-2 py-1 text-xs text-center w-full focus:ring-1 focus:ring-indigo-500 focus:outline-none" />
-                      <input type="number" min="0" value={cabin.availableSeats} onChange={(e) => updateCabin(index, 'availableSeats', e.target.value)} className="border border-slate-200 rounded-lg px-2 py-1 text-xs text-center w-full focus:ring-1 focus:ring-indigo-500 focus:outline-none" />
-                      <input type="number" min="0" value={cabin.baseFare} onChange={(e) => updateCabin(index, 'baseFare', e.target.value)} className="border border-slate-200 rounded-lg px-2 py-1 text-xs text-right w-full focus:ring-1 focus:ring-indigo-500 focus:outline-none" />
+                      <input type="number" min="0" value={cabin.totalSeats} onChange={(e) => updateCabin(index, 'totalSeats', e.target.value)} className="border border-slate-200 rounded-lg px-2 py-1 text-xs text-center w-full focus:ring-1 focus:ring-blue-600 focus:outline-none" />
+                      <input type="number" min="0" value={cabin.availableSeats} onChange={(e) => updateCabin(index, 'availableSeats', e.target.value)} className="border border-slate-200 rounded-lg px-2 py-1 text-xs text-center w-full focus:ring-1 focus:ring-blue-600 focus:outline-none" />
+                      <input type="number" min="0" value={cabin.baseFare} onChange={(e) => updateCabin(index, 'baseFare', e.target.value)} className="border border-slate-200 rounded-lg px-2 py-1 text-xs text-right w-full focus:ring-1 focus:ring-blue-600 focus:outline-none" />
                     </div>
                   ))}
                 </div>
@@ -434,21 +434,21 @@ const AdminPage: React.FC = () => {
               {/* Amenities */}
               <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Flight Amenities</label>
-                <input placeholder="WiFi, Meals, Extra Legroom (comma separated)" value={flightForm.amenities.join(', ')} onChange={(e) => setFlightForm({ ...flightForm, amenities: e.target.value.split(',').map((x) => x.trim()).filter(Boolean) })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                <input placeholder="WiFi, Meals, Extra Legroom (comma separated)" value={flightForm.amenities.join(', ')} onChange={(e) => setFlightForm({ ...flightForm, amenities: e.target.value.split(',').map((x) => x.trim()).filter(Boolean) })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
               </div>
               
               {/* Daily recurrence option */}
               {!editingFlightId && (
-                <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-4 space-y-2.5 shadow-inner">
+                <div className="bg-blue-50/20 border border-blue-100 rounded-2xl p-4 space-y-2.5 shadow-inner">
                   <div className="flex items-center gap-2">
                     <input
                       type="checkbox"
                       id="repeatFlight"
                       checked={isRecurring}
                       onChange={(e) => setIsRecurring(e.target.checked)}
-                      className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
+                      className="w-4 h-4 text-blue-900 border-slate-300 rounded focus:ring-blue-600 cursor-pointer"
                     />
-                    <label htmlFor="repeatFlight" className="text-sm font-bold text-indigo-950 cursor-pointer select-none">
+                    <label htmlFor="repeatFlight" className="text-sm font-bold text-blue-950 cursor-pointer select-none">
                       Schedule Daily Recurrence
                     </label>
                   </div>
@@ -461,9 +461,9 @@ const AdminPage: React.FC = () => {
                         max="30"
                         value={recurringDaysVal}
                         onChange={(e) => setRecurringDaysVal(Math.max(2, Math.min(30, Number(e.target.value))))}
-                        className="border border-indigo-200 rounded-lg px-2 py-0.5 w-16 text-sm text-center font-bold text-indigo-950 bg-white focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+                        className="border border-blue-200 rounded-lg px-2 py-0.5 w-16 text-sm text-center font-bold text-blue-950 bg-white focus:ring-1 focus:ring-blue-600 focus:outline-none"
                       />
-                      <span className="text-xs text-indigo-950 font-bold">days</span>
+                      <span className="text-xs text-blue-950 font-bold">days</span>
                     </div>
                   )}
                 </div>
@@ -472,7 +472,7 @@ const AdminPage: React.FC = () => {
               <button 
                 type="submit"
                 disabled={saving} 
-                className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-extrabold py-3 rounded-xl transition duration-150 shadow-md shadow-indigo-600/10 hover:shadow-lg disabled:opacity-50"
+                className="w-full bg-blue-900 hover:bg-blue-800 text-white font-extrabold py-3 rounded-xl transition duration-150 shadow-md shadow-blue-900/10 hover:shadow-lg disabled:opacity-50"
               >
                 {saving ? 'Processing...' : editingFlightId ? 'Update Flight' : 'Create Flight'}
               </button>
@@ -504,7 +504,7 @@ const AdminPage: React.FC = () => {
                         scheduled: 'bg-sky-50 text-sky-600 border-sky-100',
                         boarding: 'bg-amber-50 text-amber-600 border-amber-100',
                         delayed: 'bg-orange-50 text-orange-600 border-orange-100',
-                        departed: 'bg-indigo-50 text-indigo-600 border-indigo-100',
+                        departed: 'bg-blue-50 text-blue-900 border-blue-100',
                         arrived: 'bg-emerald-50 text-emerald-600 border-emerald-100',
                         cancelled: 'bg-rose-50 text-rose-600 border-rose-100',
                       };
@@ -533,7 +533,7 @@ const AdminPage: React.FC = () => {
                             <select 
                               value={flight.status} 
                               onChange={(e) => handleStatusChange(flight, e.target.value)} 
-                              className={`border text-[11px] font-bold rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500 capitalize cursor-pointer transition ${
+                              className={`border text-[11px] font-bold rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-600 capitalize cursor-pointer transition ${
                                 statusStyles[flight.status] || 'bg-slate-50 text-slate-600 border-slate-100'
                               }`}
                             >
@@ -561,7 +561,7 @@ const AdminPage: React.FC = () => {
                           <td className="p-4 pr-6 text-right whitespace-nowrap space-x-1.5">
                             <button 
                               onClick={() => handleEditFlight(flight)} 
-                              className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg text-xs font-extrabold transition duration-150"
+                              className="text-blue-900 hover:text-indigo-900 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg text-xs font-extrabold transition duration-150"
                             >
                               Edit
                             </button>
@@ -585,60 +585,60 @@ const AdminPage: React.FC = () => {
             {/* User creation form */}
             <form onSubmit={handleCreateUser} className="bg-white rounded-3xl shadow-xl shadow-slate-100/60 border border-slate-200/80 p-6 space-y-4">
               <h2 className="font-extrabold text-lg text-slate-800 pb-3 border-b border-slate-100 flex items-center gap-2">
-                <svg className="w-5 h-5 text-indigo-650" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+                <svg className="w-5 h-5 text-blue-900" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
                 <span>Add New Accounts</span>
               </h2>
               
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">First Name</label>
-                  <input required placeholder="Jane" value={userForm.firstName} onChange={(e) => setUserForm({ ...userForm, firstName: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                  <input required placeholder="Jane" value={userForm.firstName} onChange={(e) => setUserForm({ ...userForm, firstName: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Last Name</label>
-                  <input required placeholder="Doe" value={userForm.lastName} onChange={(e) => setUserForm({ ...userForm, lastName: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                  <input required placeholder="Doe" value={userForm.lastName} onChange={(e) => setUserForm({ ...userForm, lastName: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
                 </div>
               </div>
               
               <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Email</label>
-                <input required type="email" placeholder="jane.doe@gmail.com" value={userForm.email} onChange={(e) => setUserForm({ ...userForm, email: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                <input required type="email" placeholder="jane.doe@gmail.com" value={userForm.email} onChange={(e) => setUserForm({ ...userForm, email: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
               </div>
               <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Password</label>
-                <input required type="password" placeholder="••••••••" value={userForm.password} onChange={(e) => setUserForm({ ...userForm, password: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                <input required type="password" placeholder="••••••••" value={userForm.password} onChange={(e) => setUserForm({ ...userForm, password: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
               </div>
               <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Phone Number</label>
-                <input required placeholder="+91 9876543210" value={userForm.phone} onChange={(e) => setUserForm({ ...userForm, phone: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                <input required placeholder="+91 9876543210" value={userForm.phone} onChange={(e) => setUserForm({ ...userForm, phone: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
               </div>
               <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">System Role</label>
-                <select value={userForm.role} onChange={(e) => setUserForm({ ...userForm, role: e.target.value as 'user' | 'admin' })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-slate-700">
+                <select value={userForm.role} onChange={(e) => setUserForm({ ...userForm, role: e.target.value as 'user' | 'admin' })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all text-slate-700">
                   <option value="user">User Account</option>
                   <option value="admin">Administrator</option>
                 </select>
               </div>
               <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Date of Birth</label>
-                <input type="date" value={userForm.dateOfBirth} onChange={(e) => setUserForm({ ...userForm, dateOfBirth: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-slate-600" />
+                <input type="date" value={userForm.dateOfBirth} onChange={(e) => setUserForm({ ...userForm, dateOfBirth: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all text-slate-600" />
               </div>
               
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Passport Number</label>
-                  <input placeholder="A1234567" value={userForm.passportNumber} onChange={(e) => setUserForm({ ...userForm, passportNumber: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                  <input placeholder="A1234567" value={userForm.passportNumber} onChange={(e) => setUserForm({ ...userForm, passportNumber: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Nationality</label>
-                  <input placeholder="Indian" value={userForm.nationality} onChange={(e) => setUserForm({ ...userForm, nationality: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" />
+                  <input placeholder="Indian" value={userForm.nationality} onChange={(e) => setUserForm({ ...userForm, nationality: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
                 </div>
               </div>
 
               <button 
                 type="submit"
                 disabled={saving} 
-                className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-extrabold py-3 rounded-xl transition duration-150 shadow-md shadow-indigo-600/10 hover:shadow-lg disabled:opacity-50"
+                className="w-full bg-blue-900 hover:bg-blue-800 text-white font-extrabold py-3 rounded-xl transition duration-150 shadow-md shadow-blue-900/10 hover:shadow-lg disabled:opacity-50"
               >
                 {saving ? 'Creating...' : 'Create Account'}
               </button>
@@ -676,9 +676,9 @@ const AdminPage: React.FC = () => {
                           <select 
                             value={adminUser.role} 
                             onChange={(e) => handleRoleChange(adminUser._id, e.target.value as 'user' | 'admin')} 
-                            className={`border text-[11px] font-bold rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer capitalize transition ${
+                            className={`border text-[11px] font-bold rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-600 cursor-pointer capitalize transition ${
                               adminUser.role === 'admin' 
-                                ? 'bg-indigo-50 text-indigo-700 border-indigo-100' 
+                                ? 'bg-indigo-50 text-blue-900 border-blue-100' 
                                 : 'bg-slate-50 text-slate-600 border-slate-200'
                             }`}
                           >
@@ -708,7 +708,7 @@ const AdminPage: React.FC = () => {
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">Filter:</span>
-                <select value={bookingStatus} onChange={(e) => setBookingStatus(e.target.value)} className="border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-600 bg-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 cursor-pointer capitalize">
+                <select value={bookingStatus} onChange={(e) => setBookingStatus(e.target.value)} className="border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-600 bg-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 cursor-pointer capitalize">
                   {['all', 'pending', 'confirmed', 'cancelled', 'completed'].map((s) => <option key={s}>{s}</option>)}
                 </select>
               </div>
@@ -739,7 +739,7 @@ const AdminPage: React.FC = () => {
                     return (
                       <tr key={booking._id} className="hover:bg-slate-50/30 transition duration-150">
                         <td className="p-4 pl-6">
-                          <div className="font-mono font-bold text-indigo-600 text-sm tracking-wide">{booking.bookingReference}</div>
+                          <div className="font-mono font-bold text-blue-900 text-sm tracking-wide">{booking.bookingReference}</div>
                           <span className="text-[10px] font-mono text-slate-400">ID: {booking._id.substring(0, 8)}</span>
                         </td>
                         <td className="p-4">

@@ -132,7 +132,7 @@ Thank you for booking with FlightBook!
               onClick={() => setFilter(s)}
               className={`px-4 py-2 text-xs font-extrabold rounded-lg transition-all capitalize ${
                 filter === s
-                  ? 'bg-white text-indigo-600 shadow-sm'
+                  ? 'bg-white text-blue-900 shadow-sm'
                   : 'text-slate-500 hover:text-slate-800'
               }`}
             >
@@ -167,7 +167,7 @@ Thank you for booking with FlightBook!
           </p>
           <button
             onClick={() => navigate('/search')}
-            className="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-extrabold py-3 px-6 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-indigo-600/10 transition duration-150"
+            className="bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-500 hover:to-orange-600 text-white font-extrabold py-3 px-6 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-orange-600/20 transition duration-150"
           >
             Search Flights
           </button>
@@ -181,7 +181,7 @@ Thank you for booking with FlightBook!
                 <div className="flex flex-wrap items-center gap-4">
                   <div>
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Booking Ref</span>
-                    <p className="font-bold font-mono text-indigo-600 text-sm">{booking.bookingReference}</p>
+                    <p className="font-bold font-mono text-blue-900 text-sm">{booking.bookingReference}</p>
                   </div>
                   <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                     booking.status === 'confirmed'
@@ -211,7 +211,7 @@ Thank you for booking with FlightBook!
                     <div>
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Departure</p>
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded text-xs">{booking.flightId.origin?.iataCode}</span>
+                        <span className="font-bold text-blue-900 bg-blue-50 px-1.5 py-0.5 rounded text-xs">{booking.flightId.origin?.iataCode}</span>
                         <span className="text-xs font-semibold text-slate-600">{booking.flightId.origin?.city}</span>
                       </div>
                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">
@@ -221,7 +221,7 @@ Thank you for booking with FlightBook!
                     <div>
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Arrival</p>
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded text-xs">{booking.flightId.destination?.iataCode}</span>
+                        <span className="font-bold text-blue-900 bg-blue-50 px-1.5 py-0.5 rounded text-xs">{booking.flightId.destination?.iataCode}</span>
                         <span className="text-xs font-semibold text-slate-600">{booking.flightId.destination?.city}</span>
                       </div>
                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">
@@ -247,7 +247,7 @@ Thank you for booking with FlightBook!
                         <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
                         <span>{p.firstName} {p.lastName}</span>
                         <span className="text-slate-300 font-normal">|</span>
-                        <span className="text-indigo-600 font-bold text-[10px] bg-indigo-50 px-1 py-0.5 rounded">Seat {p.seatNumber}</span>
+                        <span className="text-blue-900 font-bold text-[10px] bg-blue-50 px-1 py-0.5 rounded">Seat {p.seatNumber}</span>
                       </span>
                     ))}
                   </div>
@@ -280,7 +280,7 @@ Thank you for booking with FlightBook!
                       onClick={() => navigate(`/payment/${booking._id}`, {
                         state: { bookingReference: booking.bookingReference, fareBreakdown: booking.fareBreakdown }
                       })}
-                      className="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-extrabold py-2.5 px-5 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-indigo-600/15 transition duration-150"
+                      className="bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-500 hover:to-orange-600 text-white font-extrabold py-2.5 px-5 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-orange-600/20 transition duration-150"
                     >
                       Complete Payment Now
                     </button>

@@ -42,7 +42,7 @@ const CABIN_CONFIG: Record<
     columns: ['A', 'B', 'D', 'E'],
     seatsPerRow: 4,
     label: 'Business Class',
-    rowColor: 'from-purple-50 to-indigo-50',
+    rowColor: 'from-blue-100/40 to-blue-50',
   },
   economy: {
     columns: ['A', 'B', 'C', 'D', 'E', 'F'],

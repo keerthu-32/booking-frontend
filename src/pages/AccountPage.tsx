@@ -156,8 +156,8 @@ const AccountPage: React.FC = () => {
   if (!accessToken) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-12 text-center">
-        <p className="text-gray-600 mb-4">Please log in to view your account.</p>
-        <button onClick={() => navigate('/login')} className="bg-blue-600 text-white px-6 py-2 rounded-lg">
+        <p className="text-gray-600 mb-4 font-semibold">Please log in to view your account.</p>
+        <button onClick={() => navigate('/login')} className="bg-blue-900 hover:bg-blue-800 text-white font-extrabold px-6 py-2.5 rounded-xl shadow-md transition">
           Login
         </button>
       </div>
@@ -165,13 +165,13 @@ const AccountPage: React.FC = () => {
   }
 
   if (loading) {
-    return <div className="max-w-7xl mx-auto px-4 py-12 text-center text-gray-500">Loading account...</div>;
+    return <div className="max-w-7xl mx-auto px-4 py-12 text-center text-slate-400 font-bold">Loading account...</div>;
   }
 
   if (error) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="bg-red-100 border border-red-400 text-red-700 p-4 rounded">{error}</div>
+        <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-900 p-4 rounded-xl text-xs font-semibold">{error}</div>
       </div>
     );
   }
@@ -180,176 +180,183 @@ const AccountPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-bold">My Account</h1>
-          <p className="text-gray-500 mt-1">View your profile and manage your tickets</p>
+          <h1 className="text-3xl font-black text-slate-800 tracking-tight">My Account</h1>
+          <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mt-0.5">View your profile and manage your tickets</p>
         </div>
-        <Link to="/my-bookings" className="text-blue-600 hover:underline text-sm font-medium">
+        <Link to="/my-bookings" className="text-blue-900 hover:text-blue-700 text-xs font-extrabold uppercase tracking-wider bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl transition shadow-sm">
           Open booking list
         </Link>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow p-6 lg:col-span-1">
-          <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
+      <div className="grid lg:grid-cols-3 gap-8">
+        <div className="bg-white rounded-3xl border border-slate-200/60 shadow-xl p-6 md:p-8 lg:col-span-1">
+          <h2 className="text-lg font-bold text-slate-800 mb-4">Edit Profile</h2>
           {profile && (
-            <div className="mb-4 rounded-lg bg-gray-50 border p-3 text-sm text-gray-600">
-              <div><span className="text-gray-500">Email:</span> <span className="font-medium">{profile.email}</span></div>
-              <div><span className="text-gray-500">Role:</span> <span className="font-medium capitalize">{profile.role}</span></div>
+            <div className="mb-4 rounded-xl bg-slate-50/50 border border-slate-200/65 p-3.5 text-xs text-slate-600 space-y-1">
+              <div><span className="text-slate-400 font-bold uppercase">Email:</span> <span className="font-semibold text-slate-700">{profile.email}</span></div>
+              <div><span className="text-slate-400 font-bold uppercase">Role:</span> <span className="font-bold text-blue-900 capitalize">{profile.role}</span></div>
             </div>
           )}
-          <form className="space-y-4" onSubmit={handleSave}>
+          <form className="space-y-4 text-xs font-bold text-slate-500 uppercase tracking-wide" onSubmit={handleSave}>
             <div className="grid sm:grid-cols-2 gap-4">
-              <label className="block text-sm">
-                <span className="text-gray-500">First name</span>
-                <input className="mt-1 w-full border rounded-lg px-3 py-2" value={form.firstName} onChange={(e) => setForm((p) => ({ ...p, firstName: e.target.value }))} />
+              <label className="block">
+                <span className="block mb-1.5">First name</span>
+                <input className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-blue-600 transition-all focus:border-blue-600 text-slate-800 font-semibold uppercase" value={form.firstName} onChange={(e) => setForm((p) => ({ ...p, firstName: e.target.value }))} />
               </label>
-              <label className="block text-sm">
-                <span className="text-gray-500">Last name</span>
-                <input className="mt-1 w-full border rounded-lg px-3 py-2" value={form.lastName} onChange={(e) => setForm((p) => ({ ...p, lastName: e.target.value }))} />
+              <label className="block">
+                <span className="block mb-1.5">Last name</span>
+                <input className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-blue-600 transition-all focus:border-blue-600 text-slate-800 font-semibold uppercase" value={form.lastName} onChange={(e) => setForm((p) => ({ ...p, lastName: e.target.value }))} />
               </label>
             </div>
-            <label className="block text-sm">
-              <span className="text-gray-500">Phone</span>
-              <input className="mt-1 w-full border rounded-lg px-3 py-2" value={form.phone} onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))} />
+            <label className="block">
+              <span className="block mb-1.5">Phone</span>
+              <input className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-blue-600 transition-all focus:border-blue-600 text-slate-800 font-semibold" value={form.phone} onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))} />
             </label>
             <div className="grid sm:grid-cols-2 gap-4">
-              <label className="block text-sm">
-                <span className="text-gray-500">Date of birth</span>
-                <input type="date" className="mt-1 w-full border rounded-lg px-3 py-2" value={form.dateOfBirth} onChange={(e) => setForm((p) => ({ ...p, dateOfBirth: e.target.value }))} />
+              <label className="block">
+                <span className="block mb-1.5">Date of birth</span>
+                <input type="date" className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-blue-600 transition-all focus:border-blue-600 text-slate-800 font-medium" value={form.dateOfBirth} onChange={(e) => setForm((p) => ({ ...p, dateOfBirth: e.target.value }))} />
               </label>
-              <label className="block text-sm">
-                <span className="text-gray-500">Nationality</span>
-                <input className="mt-1 w-full border rounded-lg px-3 py-2" value={form.nationality} onChange={(e) => setForm((p) => ({ ...p, nationality: e.target.value }))} />
+              <label className="block">
+                <span className="block mb-1.5">Nationality</span>
+                <input className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-blue-600 transition-all focus:border-blue-600 text-slate-800 font-medium" value={form.nationality} onChange={(e) => setForm((p) => ({ ...p, nationality: e.target.value }))} />
               </label>
             </div>
-            <label className="block text-sm">
-              <span className="text-gray-500">Passport number</span>
-              <input className="mt-1 w-full border rounded-lg px-3 py-2" value={form.passportNumber} onChange={(e) => setForm((p) => ({ ...p, passportNumber: e.target.value }))} />
+            <label className="block">
+              <span className="block mb-1.5">Passport number</span>
+              <input className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-blue-600 transition-all focus:border-blue-600 text-slate-800 font-semibold" value={form.passportNumber} onChange={(e) => setForm((p) => ({ ...p, passportNumber: e.target.value }))} />
             </label>
             <div className="grid sm:grid-cols-2 gap-4">
-              <label className="block text-sm">
-                <span className="text-gray-500">Seat preference</span>
-                <select className="mt-1 w-full border rounded-lg px-3 py-2" value={form.seatPreference} onChange={(e) => setForm((p) => ({ ...p, seatPreference: e.target.value as 'window' | 'middle' | 'aisle' }))}>
+              <label className="block">
+                <span className="block mb-1.5">Seat preference</span>
+                <select className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-blue-600 transition-all focus:border-blue-600 text-slate-800 font-bold" value={form.seatPreference} onChange={(e) => setForm((p) => ({ ...p, seatPreference: e.target.value as 'window' | 'middle' | 'aisle' }))}>
                   <option value="window">Window</option>
                   <option value="middle">Middle</option>
                   <option value="aisle">Aisle</option>
                 </select>
               </label>
-              <label className="block text-sm">
-                <span className="text-gray-500">Meal preference</span>
-                <input className="mt-1 w-full border rounded-lg px-3 py-2" value={form.mealPreference} onChange={(e) => setForm((p) => ({ ...p, mealPreference: e.target.value }))} />
+              <label className="block">
+                <span className="block mb-1.5">Meal preference</span>
+                <input className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:ring-1 focus:ring-blue-600 transition-all focus:border-blue-600 text-slate-800 font-semibold" value={form.mealPreference} onChange={(e) => setForm((p) => ({ ...p, mealPreference: e.target.value }))} />
               </label>
             </div>
-            <label className="flex items-center gap-2 text-sm text-gray-600">
-              <input type="checkbox" checked={form.newsletterOptIn} onChange={(e) => setForm((p) => ({ ...p, newsletterOptIn: e.target.checked }))} />
+            <label className="flex items-center gap-2 text-xs text-slate-655 font-bold tracking-normal normal-case py-1">
+              <input type="checkbox" className="rounded text-blue-900 focus:ring-blue-900 w-4 h-4 border-slate-200" checked={form.newsletterOptIn} onChange={(e) => setForm((p) => ({ ...p, newsletterOptIn: e.target.checked }))} />
               Subscribe to travel updates
             </label>
-            <button type="submit" disabled={saving} className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded-lg transition">
+            <button type="submit" disabled={saving} className="w-full bg-blue-900 hover:bg-blue-800 disabled:bg-slate-400 text-white font-extrabold py-3 px-4 rounded-xl transition shadow-md shadow-blue-900/10 hover:shadow-lg mt-2 uppercase text-xs tracking-wider">
               {saving ? 'Saving...' : 'Save Changes'}
             </button>
           </form>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6 lg:col-span-2">
-          <h2 className="text-lg font-bold mb-4">Booking Summary</h2>
-          <div className="grid sm:grid-cols-4 gap-3">
-            <div className="rounded-lg bg-blue-50 p-4">
-              <p className="text-xs text-blue-600">Total</p>
-              <p className="text-2xl font-bold text-blue-700">{totals.total}</p>
+        <div className="bg-white rounded-3xl border border-slate-200/60 shadow-xl p-6 md:p-8 lg:col-span-2">
+          <h2 className="text-lg font-bold text-slate-800 mb-4">Booking Summary</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="rounded-2xl bg-blue-50/30 border border-blue-100 p-4">
+              <p className="text-[10px] text-blue-900 font-extrabold uppercase tracking-wider">Total</p>
+              <p className="text-2xl font-black text-blue-900 mt-1">{totals.total}</p>
             </div>
-            <div className="rounded-lg bg-green-50 p-4">
-              <p className="text-xs text-green-600">Confirmed</p>
-              <p className="text-2xl font-bold text-green-700">{totals.confirmed}</p>
+            <div className="rounded-2xl bg-emerald-50/30 border border-emerald-100 p-4">
+              <p className="text-[10px] text-emerald-700 font-extrabold uppercase tracking-wider">Confirmed</p>
+              <p className="text-2xl font-black text-emerald-700 mt-1">{totals.confirmed}</p>
             </div>
-            <div className="rounded-lg bg-yellow-50 p-4">
-              <p className="text-xs text-yellow-600">Pending</p>
-              <p className="text-2xl font-bold text-yellow-700">{totals.pending}</p>
+            <div className="rounded-2xl bg-amber-50/30 border border-amber-100 p-4">
+              <p className="text-[10px] text-amber-700 font-extrabold uppercase tracking-wider">Pending</p>
+              <p className="text-2xl font-black text-amber-700 mt-1">{totals.pending}</p>
             </div>
-            <div className="rounded-lg bg-red-50 p-4">
-              <p className="text-xs text-red-600">Cancelled</p>
-              <p className="text-2xl font-bold text-red-700">{totals.cancelled}</p>
+            <div className="rounded-2xl bg-rose-50/30 border border-rose-100 p-4">
+              <p className="text-[10px] text-rose-700 font-extrabold uppercase tracking-wider">Cancelled</p>
+              <p className="text-2xl font-black text-rose-700 mt-1">{totals.cancelled}</p>
             </div>
           </div>
         </div>
       </div>
 
       {bookings.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-lg p-16 text-center flex flex-col items-center">
-          <div className="text-slate-300 mb-4">
+        <div className="bg-white rounded-3xl border border-slate-200/60 shadow-xl p-16 text-center flex flex-col items-center">
+          <div className="text-slate-350 mb-4">
             <svg className="w-16 h-16" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v2zM13 5v2M13 17v2M13 11v2"/></svg>
           </div>
-          <h2 className="text-xl font-bold text-gray-700 mb-2">No bookings yet</h2>
-          <p className="text-gray-500 mb-6">Search and book a flight to see it here.</p>
-          <button onClick={() => navigate('/search')} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition">
+          <h2 className="text-xl font-bold text-slate-800 mb-1">No bookings yet</h2>
+          <p className="text-slate-400 text-sm mb-6">Search and book a flight to see it here.</p>
+          <button onClick={() => navigate('/search')} className="bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-500 hover:to-orange-600 text-white font-extrabold py-3 px-6 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-orange-600/20 transition duration-150">
             Search Flights
           </button>
         </div>
       ) : (
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold">Your Bookings</h2>
+          <h2 className="text-xl font-bold text-slate-800">Your Bookings</h2>
           {bookings.map((booking) => (
-            <div key={booking._id} className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="bg-gray-50 px-6 py-4 flex justify-between items-center border-b flex-wrap gap-3">
-                <div className="flex items-center gap-4">
+            <div key={booking._id} className="bg-white rounded-3xl border border-slate-200/60 shadow-md hover:shadow-lg transition duration-200 overflow-hidden">
+              <div className="bg-slate-50/60 px-6 py-4.5 flex justify-between items-center border-b border-slate-100 flex-wrap gap-3">
+                <div className="flex items-center gap-4 flex-wrap">
                   <div>
-                    <span className="text-xs text-gray-500">Booking Ref</span>
-                    <p className="font-bold font-mono text-blue-600">{booking.bookingReference}</p>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Booking Ref</span>
+                    <p className="font-bold font-mono text-blue-900 text-sm">{booking.bookingReference}</p>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${statusColors[booking.status] || 'bg-gray-100 text-gray-600'}`}>
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase border tracking-wider ${statusColors[booking.status] || 'bg-gray-100 text-gray-600'}`}>
                     {booking.status}
                   </span>
                 </div>
-                <span className="text-xs text-gray-400">Booked {new Date(booking.createdAt).toLocaleDateString()}</span>
+                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Booked {new Date(booking.createdAt).toLocaleDateString()}</span>
               </div>
 
               <div className="p-6 space-y-5">
                 {booking.flightId && (
-                  <div className="grid md:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pb-5 border-b border-slate-100">
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Flight</p>
-                      <p className="font-bold">{booking.flightId.flightNumber}</p>
-                      <p className="text-sm text-gray-500">{booking.flightId.airline}</p>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Flight</p>
+                      <p className="font-extrabold text-slate-800">{booking.flightId.flightNumber}</p>
+                      <p className="text-xs font-semibold text-slate-500">{booking.flightId.airline}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Departure</p>
-                      <p className="font-bold">{booking.flightId.origin?.iataCode}</p>
-                      <p className="text-sm text-gray-500">{booking.flightId.origin?.city}</p>
-                      <p className="text-xs text-gray-400">{new Date(booking.flightId.departureTime).toLocaleString()}</p>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Departure</p>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-blue-900 bg-blue-50 px-1.5 py-0.5 rounded text-xs">{booking.flightId.origin?.iataCode}</span>
+                        <span className="text-xs font-semibold text-slate-600">{booking.flightId.origin?.city}</span>
+                      </div>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">{new Date(booking.flightId.departureTime).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Arrival</p>
-                      <p className="font-bold">{booking.flightId.destination?.iataCode}</p>
-                      <p className="text-sm text-gray-500">{booking.flightId.destination?.city}</p>
-                      <p className="text-xs text-gray-400">{new Date(booking.flightId.arrivalTime).toLocaleString()}</p>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Arrival</p>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-blue-900 bg-blue-50 px-1.5 py-0.5 rounded text-xs">{booking.flightId.destination?.iataCode}</span>
+                        <span className="text-xs font-semibold text-slate-600">{booking.flightId.destination?.city}</span>
+                      </div>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">{new Date(booking.flightId.arrivalTime).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Total Amount</p>
-                      <p className="font-bold text-xl text-blue-600">₹{booking.fareBreakdown.totalAmount.toFixed(2)}</p>
-                      <p className="text-xs text-gray-400 capitalize">{booking.cabinClass} class</p>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Amount</p>
+                      <p className="font-black text-xl text-blue-900">₹{booking.fareBreakdown.totalAmount.toLocaleString('en-IN')}</p>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5 capitalize">{booking.cabinClass} class</p>
                     </div>
                   </div>
                 )}
 
                 <div>
-                  <p className="text-xs text-gray-500 mb-2">Passengers ({booking.passengers.length})</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2.5">Passengers ({booking.passengers.length})</p>
                   <div className="flex flex-wrap gap-2">
                     {booking.passengers.map((passenger, index) => (
-                      <span key={index} className="bg-gray-100 px-3 py-1 rounded text-sm">
-                        {passenger.firstName} {passenger.lastName} · Seat {passenger.seatNumber}
+                      <span key={index} className="bg-slate-50 text-slate-700 border border-slate-100 rounded-xl px-3.5 py-1.5 text-xs font-semibold flex items-center gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+                        <span>{passenger.firstName} {passenger.lastName}</span>
+                        <span className="text-slate-350">|</span>
+                        <span className="text-blue-900 font-bold text-[10px] bg-blue-50 px-1 py-0.5 rounded">Seat {passenger.seatNumber}</span>
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div className="flex gap-3 flex-wrap">
-                  <button onClick={() => navigate('/my-bookings')} className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg text-sm transition">
+                <div className="flex gap-3 flex-wrap pt-2">
+                  <button onClick={() => navigate('/my-bookings')} className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-extrabold py-2.5 px-5 rounded-xl text-xs uppercase tracking-wider transition">
                     View Full Booking
                   </button>
                   {booking.status === 'confirmed' && booking.flightId && new Date(booking.flightId.departureTime) > new Date() && (
                     <button
                       onClick={() => handleCancel(booking._id)}
                       disabled={cancellingId === booking._id}
-                      className="bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded-lg text-sm transition"
+                      className="border border-rose-200 text-rose-600 hover:bg-rose-50 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 font-extrabold py-2.5 px-5 rounded-xl text-xs uppercase tracking-wider transition"
                     >
                       {cancellingId === booking._id ? 'Cancelling...' : 'Cancel Ticket'}
                     </button>
