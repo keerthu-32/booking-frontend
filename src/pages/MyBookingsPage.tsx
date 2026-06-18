@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
+
 
 interface Booking {
   _id: string;
@@ -61,45 +64,197 @@ const MyBookingsPage: React.FC = () => {
     }
   };
 
-  const handleDownloadItinerary = (booking: Booking) => {
+  const handleDownloadItinerary = async (booking: Booking) => {
     const flight = booking.flightId;
-    const content = `
-FLIGHT ITINERARY
-================
-Booking Reference: ${booking.bookingReference}
-Status: ${booking.status.toUpperCase()}
-Booked On: ${new Date(booking.createdAt).toLocaleDateString()}
+    
+    // Create temporary hidden container
+    const tempContainer = document.createElement('div');
+    tempContainer.style.position = 'absolute';
+    tempContainer.style.left = '-9999px';
+    tempContainer.style.top = '-9999px';
+    tempContainer.style.width = '720px';
+    document.body.appendChild(tempContainer);
 
-FLIGHT DETAILS
---------------
-Flight: ${flight?.flightNumber || 'N/A'} | ${flight?.airline || ''}
-Route: ${flight?.origin?.iataCode} (${flight?.origin?.city}) → ${flight?.destination?.iataCode} (${flight?.destination?.city})
-Departure: ${flight?.departureTime ? new Date(flight.departureTime).toLocaleString() : 'N/A'}
-Arrival: ${flight?.arrivalTime ? new Date(flight.arrivalTime).toLocaleString() : 'N/A'}
-Duration: ${flight?.duration ? `${Math.floor(flight.duration / 60)}h ${flight.duration % 60}m` : 'N/A'}
-Cabin Class: ${booking.cabinClass?.toUpperCase()}
+    const pdf = new jsPDF('p', 'mm', 'a4');
 
-PASSENGERS
-----------
-${booking.passengers.map((p, i) => `${i + 1}. ${p.firstName} ${p.lastName} | Seat: ${p.seatNumber} | Passport: ${p.passportNumber}`).join('\n')}
+    const generateBarcode = () => {
+      const lines = [1, 2, 1, 3, 1, 1, 2, 3, 1, 2, 1, 1, 3, 1, 2, 2, 1, 1, 3, 1, 1, 2, 1, 3, 2, 1, 1, 2, 3, 1, 1, 2, 1, 1, 3, 2];
+      const bars = lines.map((w, idx) => {
+        const x = lines.slice(0, idx).reduce((acc, curr) => acc + curr * 2 + 1, 0);
+        return `<rect key="${idx}" x="${x}" y="0" width="${w * 2}" height="35" fill="#000000" />`;
+      }).join('');
+      return `
+        <svg width="240" height="45" viewBox="0 0 240 45" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 0 auto;">
+          <rect width="240" height="45" fill="#ffffff" />
+          <g transform="translate(10, 5)">
+            ${bars}
+          </g>
+        </svg>
+      `;
+    };
 
-FARE BREAKDOWN
---------------
-Base Fare: ₹${booking.fareBreakdown.baseFare.toFixed(2)}
-Taxes: ₹${booking.fareBreakdown.taxes.toFixed(2)}
-Fees: ₹${booking.fareBreakdown.fees.toFixed(2)}
-TOTAL: ₹${booking.fareBreakdown.totalAmount.toFixed(2)} ${booking.fareBreakdown.currency}
+    try {
+      for (let i = 0; i < booking.passengers.length; i++) {
+        const p = booking.passengers[i];
+        
+        const departureDate = flight?.departureTime ? new Date(flight.departureTime) : new Date();
+        const departureFormatted = departureDate.toLocaleString('en-US', {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+        const boardingTime = new Date(departureDate.getTime() - 40 * 60 * 1000);
+        const boardingFormatted = boardingTime.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
 
-Thank you for booking with FlightBook!
-    `.trim();
+        const ticketPage = document.createElement('div');
+        ticketPage.style.width = '720px';
+        ticketPage.style.height = '1018px';
+        ticketPage.style.padding = '40px';
+        ticketPage.style.boxSizing = 'border-box';
+        ticketPage.style.backgroundColor = '#f8fafc';
+        ticketPage.style.display = 'flex';
+        ticketPage.style.flexDirection = 'column';
+        ticketPage.style.justifyContent = 'space-between';
 
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `itinerary-${booking.bookingReference}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+        const barcodeSvg = generateBarcode();
+
+        ticketPage.innerHTML = `
+          <div style="
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+          ">
+            <!-- Header Banner -->
+            <div style="background: linear-gradient(135deg, #1e3a8a, #0f172a); padding: 28px 36px; color: #ffffff; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <span style="font-size: 10px; font-weight: 850; letter-spacing: 0.18em; text-transform: uppercase; color: #93c5fd; display: block; margin-bottom: 4px;">FLIGHTBOOK AIRLINES</span>
+                <h2 style="font-size: 22px; font-weight: 900; margin: 0; letter-spacing: -0.02em;">BOARDING PASS</h2>
+              </div>
+              <div style="text-align: right;">
+                <span style="font-size: 10px; font-weight: 850; letter-spacing: 0.18em; text-transform: uppercase; color: #93c5fd; display: block; margin-bottom: 4px;">CABIN CLASS</span>
+                <span style="font-size: 15px; font-weight: 900; text-transform: uppercase; background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);">${booking.cabinClass.toUpperCase()}</span>
+              </div>
+            </div>
+
+            <!-- Flight Route Block -->
+            <div style="padding: 32px 40px; display: flex; align-items: center; justify-content: space-between; background: #fafafa; border-bottom: 1px solid #f1f5f9;">
+              <div style="flex: 1.2;">
+                <span style="font-size: 40px; font-weight: 900; color: #1e3a8a; line-height: 1; letter-spacing: -0.01em;">${flight?.origin?.iataCode || 'N/A'}</span>
+                <span style="display: block; font-size: 12px; font-weight: 700; color: #64748b; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.02em;">${flight?.origin?.city || 'N/A'}</span>
+              </div>
+              
+              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 20px; min-width: 140px; flex: 1;">
+                <span style="font-size: 11px; font-weight: 800; color: #2563eb; background: #dbeafe; padding: 4px 12px; border-radius: 9999px; margin-bottom: 8px; letter-spacing: 0.05em; border: 1px solid #bfdbfe;">${flight?.flightNumber || 'N/A'}</span>
+                <div style="width: 100%; height: 2px; border-top: 2px dashed #cbd5e1; position: relative;">
+                  <span style="position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: #fafafa; padding: 0 8px; font-size: 16px;">✈️</span>
+                </div>
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; margin-top: 8px; font-family: monospace;">${flight?.duration ? `${Math.floor(flight.duration / 60)}h ${flight.duration % 60}m` : 'N/A'} Non-Stop</span>
+              </div>
+
+              <div style="flex: 1.2; text-align: right;">
+                <span style="font-size: 40px; font-weight: 900; color: #1e3a8a; line-height: 1; letter-spacing: -0.01em;">${flight?.destination?.iataCode || 'N/A'}</span>
+                <span style="display: block; font-size: 12px; font-weight: 700; color: #64748b; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.02em;">${flight?.destination?.city || 'N/A'}</span>
+              </div>
+            </div>
+
+            <!-- Notch Divider (Stub Line) -->
+            <div style="position: relative; height: 20px; background: #ffffff; display: flex; align-items: center; overflow: visible;">
+              <div style="position: absolute; left: -10px; width: 20px; height: 20px; border-radius: 50%; background: #f8fafc; border-right: 1px solid #e2e8f0; z-index: 10;"></div>
+              <div style="width: 100%; border-top: 2px dashed #cbd5e1; margin: 0 15px;"></div>
+              <div style="position: absolute; right: -10px; width: 20px; height: 20px; border-radius: 50%; background: #f8fafc; border-left: 1px solid #e2e8f0; z-index: 10;"></div>
+            </div>
+
+            <!-- Passenger & Details Grid -->
+            <div style="padding: 28px 40px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+                <div>
+                  <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">PASSENGER NAME</label>
+                  <span style="font-size: 16px; font-weight: 900; color: #0f172a; text-transform: uppercase; font-family: 'Plus Jakarta Sans', sans-serif;">${p.firstName} ${p.lastName}</span>
+                </div>
+                <div>
+                  <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">SEAT ALLOTMENT</label>
+                  <span style="font-size: 20px; font-weight: 900; color: #e11d48; background: #fff1f2; padding: 3px 12px; border-radius: 8px; border: 1px solid #ffe4e6; font-family: monospace; letter-spacing: 0.02em;">${p.seatNumber}</span>
+                </div>
+                <div>
+                  <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">DATE & DEPARTURE TIME</label>
+                  <span style="font-size: 14px; font-weight: 900; color: #0f172a;">${departureFormatted}</span>
+                </div>
+                <div>
+                  <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">BOARDING WINDOW OPENS</label>
+                  <span style="font-size: 14px; font-weight: 900; color: #16a34a; background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid #bbf7d0;">${boardingFormatted}</span>
+                </div>
+                <div>
+                  <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">BOOKING CONFIRMATION REF</label>
+                  <span style="font-size: 14px; font-weight: 900; color: #0f172a; font-family: monospace; letter-spacing: 0.05em;">${booking.bookingReference}</span>
+                </div>
+                <div>
+                  <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">PASSPORT / IDENTITY CODE</label>
+                  <span style="font-size: 14px; font-weight: 900; color: #0f172a; font-family: monospace;">${p.passportNumber || 'DOMESTIC - N/A'}</span>
+                </div>
+              </div>
+
+              <!-- Barcode & Gate Info Footer -->
+              <div style="border-top: 1px solid #f1f5f9; padding-top: 24px; display: flex; align-items: center; justify-content: space-between; margin-top: 36px;">
+                <div style="display: flex; flex-direction: column; align-items: center; flex: 1.5;">
+                  ${barcodeSvg}
+                  <span style="display: block; font-size: 8px; font-family: monospace; color: #64748b; letter-spacing: 0.3em; text-align: center; margin-top: 6px; font-weight: 700;">${booking.bookingReference}-${p.seatNumber}</span>
+                </div>
+                <div style="text-align: right; flex: 1;">
+                  <span style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">BOARDING GATE</span>
+                  <span style="font-size: 22px; font-weight: 900; color: #0f172a; letter-spacing: -0.01em;">GATE A12</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Safety Info Strip -->
+            <div style="background: #f8fafc; padding: 14px 24px; text-align: center; border-top: 1px solid #e2e8f0; display: flex; justify-content: center; align-items: center; gap: 8px;">
+              <span style="font-size: 9px; font-weight: 800; color: #64748b; letter-spacing: 0.06em; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
+                ⚠️ BOARDING CLOSES 20 MINUTES BEFORE DEPARTURE. PLEASE VERIFY GATE NUMBERS AT TERMINAL SCREENS.
+              </span>
+            </div>
+          </div>
+        `;
+        
+        tempContainer.appendChild(ticketPage);
+
+        // Convert the HTML element to a canvas using html2canvas
+        const canvas = await html2canvas(ticketPage, {
+          scale: 2,
+          useCORS: true,
+          logging: false
+        });
+        const imgData = canvas.toDataURL('image/png');
+
+        if (i > 0) {
+          pdf.addPage();
+        }
+        // Place high-res canvas rendering perfectly aligned inside standard A4 page limits
+        pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+        
+        // Clean up node to conserve browser memory
+        tempContainer.removeChild(ticketPage);
+      }
+
+      pdf.save(`boardingpass-${booking.bookingReference}.pdf`);
+    } catch (err) {
+      console.error('PDF Generation Failed:', err);
+      alert('Failed to generate PDF ticket. Please try again.');
+    } finally {
+      document.body.removeChild(tempContainer);
+    }
   };
 
   const filtered = filter === 'all' ? bookings : bookings.filter(b => b.status === filter);
