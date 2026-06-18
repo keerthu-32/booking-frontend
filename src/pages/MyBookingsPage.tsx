@@ -99,6 +99,7 @@ const MyBookingsPage: React.FC = () => {
         
         const departureDate = flight?.departureTime ? new Date(flight.departureTime) : new Date();
         const departureFormatted = departureDate.toLocaleString('en-US', {
+          timeZone: 'UTC',
           weekday: 'short',
           month: 'short',
           day: 'numeric',
@@ -106,12 +107,42 @@ const MyBookingsPage: React.FC = () => {
           minute: '2-digit',
           hour12: true
         });
-        const boardingTime = new Date(departureDate.getTime() - 40 * 60 * 1000);
-        const boardingFormatted = boardingTime.toLocaleTimeString('en-US', {
+
+        const arrivalDate = flight?.arrivalTime ? new Date(flight.arrivalTime) : new Date();
+        const arrivalFormatted = arrivalDate.toLocaleString('en-US', {
+          timeZone: 'UTC',
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
           hour: '2-digit',
           minute: '2-digit',
           hour12: true
         });
+
+        const departureTimeFormatted = departureDate.toLocaleTimeString('en-US', {
+          timeZone: 'UTC',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+
+        const arrivalTimeFormatted = arrivalDate.toLocaleTimeString('en-US', {
+          timeZone: 'UTC',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+
+        const boardingTime = new Date(departureDate.getTime() - 40 * 60 * 1000);
+        const boardingFormatted = boardingTime.toLocaleTimeString('en-US', {
+          timeZone: 'UTC',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+
+        const durationMins = Math.max(1, Math.round((new Date(arrivalDate).getTime() - new Date(departureDate).getTime()) / 60000));
+        const durationFormatted = `${Math.floor(durationMins / 60)}h ${durationMins % 60}m`;
 
         const ticketPage = document.createElement('div');
         ticketPage.style.width = '720px';
@@ -154,6 +185,7 @@ const MyBookingsPage: React.FC = () => {
               <div style="flex: 1.2;">
                 <span style="font-size: 40px; font-weight: 900; color: #1e3a8a; line-height: 1; letter-spacing: -0.01em;">${flight?.origin?.iataCode || 'N/A'}</span>
                 <span style="display: block; font-size: 12px; font-weight: 700; color: #64748b; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.02em;">${flight?.origin?.city || 'N/A'}</span>
+                <span style="display: block; font-size: 14px; font-weight: 900; color: #0f172a; margin-top: 4px;">${departureTimeFormatted}</span>
               </div>
               
               <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 20px; min-width: 140px; flex: 1;">
@@ -161,12 +193,13 @@ const MyBookingsPage: React.FC = () => {
                 <div style="width: 100%; height: 2px; border-top: 2px dashed #cbd5e1; position: relative;">
                   <span style="position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: #fafafa; padding: 0 8px; font-size: 16px;">✈️</span>
                 </div>
-                <span style="font-size: 11px; font-weight: 700; color: #64748b; margin-top: 8px; font-family: monospace;">${flight?.duration ? `${Math.floor(flight.duration / 60)}h ${flight.duration % 60}m` : 'N/A'} Non-Stop</span>
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; margin-top: 8px; font-family: monospace;">${durationFormatted} Non-Stop</span>
               </div>
 
               <div style="flex: 1.2; text-align: right;">
                 <span style="font-size: 40px; font-weight: 900; color: #1e3a8a; line-height: 1; letter-spacing: -0.01em;">${flight?.destination?.iataCode || 'N/A'}</span>
                 <span style="display: block; font-size: 12px; font-weight: 700; color: #64748b; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.02em;">${flight?.destination?.city || 'N/A'}</span>
+                <span style="display: block; font-size: 14px; font-weight: 900; color: #0f172a; margin-top: 4px;">${arrivalTimeFormatted}</span>
               </div>
             </div>
 
@@ -177,37 +210,44 @@ const MyBookingsPage: React.FC = () => {
               <div style="position: absolute; right: -10px; width: 20px; height: 20px; border-radius: 50%; background: #f8fafc; border-left: 1px solid #e2e8f0; z-index: 10;"></div>
             </div>
 
-            <!-- Passenger & Details Grid -->
+            <!-- Passenger & Details Layout -->
             <div style="padding: 28px 40px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
-              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
-                <div>
+              <div style="display: flex; flex-wrap: wrap; margin: -12px;">
+                <div style="width: 50%; padding: 12px; box-sizing: border-box; display: inline-block; vertical-align: top;">
                   <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">PASSENGER NAME</label>
-                  <span style="font-size: 16px; font-weight: 900; color: #0f172a; text-transform: uppercase; font-family: 'Plus Jakarta Sans', sans-serif;">${p.firstName} ${p.lastName}</span>
+                  <span style="font-size: 15px; font-weight: 900; color: #0f172a; text-transform: uppercase; font-family: 'Plus Jakarta Sans', sans-serif; display: block;">${p.firstName} ${p.lastName}</span>
                 </div>
-                <div>
+                <div style="width: 50%; padding: 12px; box-sizing: border-box; display: inline-block; vertical-align: top;">
                   <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">SEAT ALLOTMENT</label>
-                  <span style="font-size: 20px; font-weight: 900; color: #e11d48; background: #fff1f2; padding: 3px 12px; border-radius: 8px; border: 1px solid #ffe4e6; font-family: monospace; letter-spacing: 0.02em;">${p.seatNumber}</span>
+                  <span style="font-size: 16px; font-weight: 900; color: #e11d48; background: #fff1f2; padding: 2px 10px; border-radius: 8px; border: 1px solid #ffe4e6; font-family: monospace; letter-spacing: 0.02em; display: inline-block;">${p.seatNumber}</span>
                 </div>
-                <div>
-                  <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">DATE & DEPARTURE TIME</label>
-                  <span style="font-size: 14px; font-weight: 900; color: #0f172a;">${departureFormatted}</span>
+                
+                <div style="width: 50%; padding: 12px; box-sizing: border-box; display: inline-block; vertical-align: top;">
+                  <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">DATE & DEPARTURE</label>
+                  <span style="font-size: 13px; font-weight: 900; color: #0f172a; display: block;">${departureFormatted}</span>
                 </div>
-                <div>
+                <div style="width: 50%; padding: 12px; box-sizing: border-box; display: inline-block; vertical-align: top;">
+                  <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">DATE & ARRIVAL</label>
+                  <span style="font-size: 13px; font-weight: 900; color: #0f172a; display: block;">${arrivalFormatted}</span>
+                </div>
+                
+                <div style="width: 50%; padding: 12px; box-sizing: border-box; display: inline-block; vertical-align: top;">
                   <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">BOARDING WINDOW OPENS</label>
-                  <span style="font-size: 14px; font-weight: 900; color: #16a34a; background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid #bbf7d0;">${boardingFormatted}</span>
+                  <span style="font-size: 13px; font-weight: 900; color: #16a34a; background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid #bbf7d0; display: inline-block;">${boardingFormatted}</span>
                 </div>
-                <div>
-                  <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">BOOKING CONFIRMATION REF</label>
-                  <span style="font-size: 14px; font-weight: 900; color: #0f172a; font-family: monospace; letter-spacing: 0.05em;">${booking.bookingReference}</span>
-                </div>
-                <div>
+                <div style="width: 50%; padding: 12px; box-sizing: border-box; display: inline-block; vertical-align: top;">
                   <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">PASSPORT / IDENTITY CODE</label>
-                  <span style="font-size: 14px; font-weight: 900; color: #0f172a; font-family: monospace;">${p.passportNumber || 'DOMESTIC - N/A'}</span>
+                  <span style="font-size: 13px; font-weight: 900; color: #0f172a; font-family: monospace; display: block;">${p.passportNumber || 'DOMESTIC - N/A'}</span>
+                </div>
+                
+                <div style="width: 100%; padding: 12px; box-sizing: border-box; display: block;">
+                  <label style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.15em; display: block; margin-bottom: 4px;">BOOKING CONFIRMATION REF</label>
+                  <span style="font-size: 13px; font-weight: 900; color: #0f172a; font-family: monospace; letter-spacing: 0.05em; display: block;">${booking.bookingReference}</span>
                 </div>
               </div>
 
               <!-- Barcode & Gate Info Footer -->
-              <div style="border-top: 1px solid #f1f5f9; padding-top: 24px; display: flex; align-items: center; justify-content: space-between; margin-top: 36px;">
+              <div style="border-top: 1px solid #f1f5f9; padding-top: 24px; display: flex; align-items: center; justify-content: space-between; margin-top: 24px;">
                 <div style="display: flex; flex-direction: column; align-items: center; flex: 1.5;">
                   ${barcodeSvg}
                   <span style="display: block; font-size: 8px; font-family: monospace; color: #64748b; letter-spacing: 0.3em; text-align: center; margin-top: 6px; font-weight: 700;">${booking.bookingReference}-${p.seatNumber}</span>
