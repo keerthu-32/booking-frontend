@@ -86,6 +86,7 @@ const AdminPage: React.FC = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [isRecurring, setIsRecurring] = useState(false);
   const [recurringDaysVal, setRecurringDaysVal] = useState(7);
+  const [routeType, setRouteType] = useState<'domestic' | 'international'>('domestic');
 
   const isAdmin = user?.role === 'admin';
 
@@ -143,6 +144,7 @@ const AdminPage: React.FC = () => {
     setFlightForm(emptyFlight);
     setIsRecurring(false);
     setRecurringDaysVal(7);
+    setRouteType('domestic');
   };
 
   const handleEditFlight = (flight: FlightRow) => {
@@ -161,12 +163,26 @@ const AdminPage: React.FC = () => {
       cabinClasses: flight.cabinClasses,
       amenities: flight.amenities || [],
     });
+    const isDom = flight.origin.country.trim().toLowerCase() === flight.destination.country.trim().toLowerCase();
+    setRouteType(isDom ? 'domestic' : 'international');
     setTab('flights');
   };
 
   const handleSaveFlight = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!accessToken) return;
+
+    // Validate based on routeType selection
+    const isOriginDestSame = flightForm.origin.country.trim().toLowerCase() === flightForm.destination.country.trim().toLowerCase();
+    if (routeType === 'domestic' && !isOriginDestSame) {
+      setError('Route mismatch: For a Domestic flight, Origin Country and Destination Country must be identical.');
+      return;
+    }
+    if (routeType === 'international' && isOriginDestSame) {
+      setError('Route mismatch: For an International flight, Origin Country and Destination Country must be different.');
+      return;
+    }
+
     try {
       setSaving(true);
       setError(null);
@@ -378,6 +394,13 @@ const AdminPage: React.FC = () => {
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Dest Country</label>
                   <input required placeholder="India" value={flightForm.destination.country} onChange={(e) => setFlightForm({ ...flightForm, destination: { ...flightForm.destination, country: e.target.value } })} className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
+                </div>
+                <div className="space-y-1 col-span-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Route Type (For Passport Validation)</label>
+                  <select value={routeType} onChange={(e) => setRouteType(e.target.value as 'domestic' | 'international')} className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm bg-slate-50/50 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all text-slate-700 capitalize font-semibold">
+                    <option value="domestic">Domestic (No Passport Required)</option>
+                    <option value="international">International (Passport Required)</option>
+                  </select>
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Departure Slot</label>

@@ -117,11 +117,11 @@ export interface AdminFlightPayload {
   amenities: string[];
   recurringDays?: number;
 }
-
-class ApiService {
+class ApiService {
   private getHeaders(token?: string): HeadersInit {
     const headers: HeadersInit = { 'Content-Type': 'application/json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const activeToken = localStorage.getItem('accessToken') || token;
+    if (activeToken) headers['Authorization'] = `Bearer ${activeToken}`;
     return headers;
   }
 
@@ -260,7 +260,7 @@ class ApiService {
   }
 
   async confirmPayment(
-    payload: { paymentIntentId: string; orderId?: string },
+    payload: { paymentIntentId: string; orderId?: string; razorpaySignature?: string },
     token: string
   ) {
     const response = await this.fetchWithRefresh(

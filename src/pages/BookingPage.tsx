@@ -30,6 +30,9 @@ const BookingPage: React.FC = () => {
   const flight = location.state?.flight;
   const selectedClass: CabinClass = location.state?.selectedClass || 'economy';
 
+  const isDomestic = flight?.origin?.country && flight?.destination?.country && 
+    flight.origin.country.trim().toLowerCase() === flight.destination.country.trim().toLowerCase();
+
   const [passengers, setPassengers] = useState<Passenger[]>([
     {
       firstName: '',
@@ -100,8 +103,12 @@ const BookingPage: React.FC = () => {
 
   // Field validator helper
   const isFieldValid = (field: keyof Passenger, value: string): boolean => {
+    const val = (value || '').trim();
+    if (field === 'passportNumber' && isDomestic) {
+      if (val === '') return true;
+      return val.length >= 5;
+    }
     if (!value) return false;
-    const val = value.trim();
     switch (field) {
       case 'firstName':
       case 'lastName':
@@ -229,6 +236,30 @@ const BookingPage: React.FC = () => {
 
   const goToNextStep = () => {
     if (activeStep === 1) {
+      // Check for duplicate passenger information
+      const seen = new Set<string>();
+      const seenPassports = new Set<string>();
+      for (let i = 0; i < passengers.length; i++) {
+        const p = passengers[i];
+        if (p.firstName && p.lastName && p.dateOfBirth) {
+          const key = `${p.firstName.trim().toLowerCase()}|${p.lastName.trim().toLowerCase()}|${p.dateOfBirth}`;
+          if (seen.has(key)) {
+            setError(`Duplicate passenger details detected for ${p.firstName} ${p.lastName}. Each traveler must have unique details.`);
+            return;
+          }
+          seen.add(key);
+
+          if (p.passportNumber && p.passportNumber.trim() !== '') {
+            const passportKey = p.passportNumber.trim().toLowerCase();
+            if (seenPassports.has(passportKey)) {
+              setError(`Duplicate passport number detected: ${p.passportNumber}. Each traveler must have a unique passport.`);
+              return;
+            }
+            seenPassports.add(passportKey);
+          }
+        }
+      }
+
       if (!getStepValidation(1)) {
         triggerAllFieldsTouched();
         setError('Please fill in all traveler details correctly.');
@@ -264,6 +295,30 @@ const BookingPage: React.FC = () => {
     if (new Set(seatNumbers).size !== seatNumbers.length) {
       setError('Duplicate seat numbers detected. Each passenger must have a unique seat.');
       return;
+    }
+
+    // Check for duplicate passenger information
+    const seen = new Set<string>();
+    const seenPassports = new Set<string>();
+    for (let i = 0; i < passengers.length; i++) {
+      const p = passengers[i];
+      if (p.firstName && p.lastName && p.dateOfBirth) {
+        const key = `${p.firstName.trim().toLowerCase()}|${p.lastName.trim().toLowerCase()}|${p.dateOfBirth}`;
+        if (seen.has(key)) {
+          setError(`Duplicate passenger details detected for ${p.firstName} ${p.lastName}. Each traveler must have unique details.`);
+          return;
+        }
+        seen.add(key);
+
+        if (p.passportNumber && p.passportNumber.trim() !== '') {
+          const passportKey = p.passportNumber.trim().toLowerCase();
+          if (seenPassports.has(passportKey)) {
+            setError(`Duplicate passport number detected: ${p.passportNumber}. Each traveler must have a unique passport.`);
+            return;
+          }
+          seenPassports.add(passportKey);
+        }
+      }
     }
 
     try {
@@ -516,7 +571,7 @@ const BookingPage: React.FC = () => {
                             {/* Passport Number */}
                             <div>
                               <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 flex justify-between">
-                                <span>Passport Number *</span>
+                                <span>Passport Number {isDomestic ? '(Optional)' : '*'}</span>
                                 {touched[index]?.passportNumber && !isFieldValid('passportNumber', passenger.passportNumber) && (
                                   <span className="text-rose-500 font-bold uppercase text-[9px]">Min 5 chars</span>
                                 )}
@@ -528,7 +583,7 @@ const BookingPage: React.FC = () => {
                                 onChange={(e) => handlePassengerChange(index, 'passportNumber', e.target.value)}
                                 onBlur={() => handleBlur(index, 'passportNumber')}
                                 className={getInputClassName(index, 'passportNumber', passenger.passportNumber)}
-                                required
+                                required={!isDomestic}
                               />
                             </div>
 

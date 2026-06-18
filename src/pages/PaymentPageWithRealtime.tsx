@@ -127,15 +127,19 @@ const PaymentPageWithRealtime: React.FC = () => {
         accessToken!
       );
 
-      if (initiateRes.data?.data?.providerTransactionId) {
+      if (initiateRes.data?.paymentIntentId) {
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
         const confirmRes = await apiService.confirmPayment(
-          initiateRes.data.data.providerTransactionId,
+          {
+            paymentIntentId: initiateRes.data.paymentIntentId,
+            orderId: initiateRes.data.orderId || initiateRes.data.paymentIntentId,
+            razorpaySignature: 'dummy_signature_realtime',
+          },
           accessToken!
         );
 
-        if (confirmRes.data?.success) {
+        if (confirmRes.success) {
           console.log('Payment confirmation process triggered');
         }
       }

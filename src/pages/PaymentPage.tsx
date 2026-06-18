@@ -86,6 +86,7 @@ const PaymentPage: React.FC = () => {
               {
                 paymentIntentId: response.razorpay_payment_id,
                 orderId: response.razorpay_order_id,
+                razorpaySignature: response.razorpay_signature,
               },
               accessToken
             );
@@ -229,6 +230,7 @@ const PaymentPage: React.FC = () => {
                 ? 'Loading payment systems...'
                 : `Pay ${fareBreakdown ? `₹${fareBreakdown.totalAmount.toLocaleString('en-IN')}` : 'Now'} →`}
             </button>
+
 
             <p className="text-[10px] text-slate-400 text-center font-semibold uppercase tracking-wider mt-5 flex items-center justify-center gap-1.5">
               <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
